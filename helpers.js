@@ -48,7 +48,10 @@ const runGqlQuery = ({ query, variables }) =>
     }),
   }).then(res => res.json());
 
+const visitPath = browser => path => browser.url(urlJoin(process.env.UI_ROOT, path));
+
 module.exports = {
   runGqlQuery,
   updateStatus,
+  visitPath,
 };

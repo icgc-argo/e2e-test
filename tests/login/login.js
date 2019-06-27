@@ -1,4 +1,4 @@
-const bs = require('../../helpers');
+const { updateStatus, visitPath } = require('../../helpers');
 
 module.exports = {
   desiredCapabilities: {
@@ -6,10 +6,8 @@ module.exports = {
   },
 
   'User page exists': browser => {
-    browser
-      .url('http://localhost:8080')
+    visitPath(browser)('/')
       .waitForElementVisible('body')
-      .pause(5000)
       .assert.containsText('h1', 'Welcome to Argo!')
       .end();
   },
@@ -30,7 +28,7 @@ module.exports = {
     // manual failure check for browserstack API call
     if (result.failed > 0) {
       const err = result.lastError.message;
-      bs.updateStatus(browser, 'failed', err);
+      updateStatus(browser, 'failed', err);
     }
     done();
   },
