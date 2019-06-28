@@ -1,5 +1,5 @@
 const urlJoin = require('url-join');
-
+const { orderBy } = require('lodash');
 const { runGqlQuery, visitPath, updateStatus } = require('../../helpers');
 
 module.exports = {
@@ -13,14 +13,14 @@ module.exports = {
       .end();
   },
 
-  'Programs list page renders the right programs to table': browser => {
+  'Programs list page renders the right programs sorted by name to table': browser => {
     const programsPage = visitPath(browser)('/programs');
     runGqlQuery({
       query: `
         {
           programs {
-            name
             shortName
+            name
             cancerTypes
           }
         }
@@ -28,7 +28,7 @@ module.exports = {
     }).then(({ data: { programs } }) => {
       // programsPage.waitForElementVisible('#programs-list-container');
       programsPage.expect.elements(`.rt-td:nth-child(1)`).count.to.equal(programs.length);
-      programs.forEach((program, i) => {
+      orderBy(programs, 'shortName').forEach((program, i) => {
         programsPage.assert.containsText(
           `.rt-tr-group:nth-child(${i + 1}) .rt-td:nth-child(1)`,
           program.name,

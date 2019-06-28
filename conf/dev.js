@@ -1,11 +1,12 @@
 const { CHROME_LATEST } = require('../env/dev');
+const path = require('path');
 
 const config = {
   src_folders: ['./tests'],
   output_folder: './test_reports',
   webdriver: {
     start_process: true,
-    server_path: '/usr/bin/chromedriver',
+    server_path: path.resolve(__dirname, `../node_modules/chromedriver/bin/chromedriver`),
     port: 9515,
   },
 
