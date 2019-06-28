@@ -47,10 +47,11 @@ BROWSERSTACK_SELENIUM_HOST = hub-cloud.browserstack.com
 BROWSERSTACK_PROJECT_NAME = a_project_name # https://www.browserstack.com/question/640 (valid characters)
 ```
 
-## Running
+## Dev
 
-`npm run e2e`
-Interactively select whether you want to test on your local dev enviroment or use Browerstack local testing
+- Copy the `conf/dev.js.schema` file into `conf/dev.js`
+- By default, the `src_folders` field points to `['./tests']` which runs all tests. Point this to sub folders where your test files are.
+- Running the test locally `npm run dev`
 
 ## Creating Tests
 

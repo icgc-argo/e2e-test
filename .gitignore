@@ -57,17 +57,12 @@ typings/
 # dotenv environment variables file
 .env
 
-# next.js build output
-.next
-
-# storybook build
-storybook-static
-
 # Testing
 test_reports
 /test_reports
 browserstack.err
 chromedriver.log
+/conf/dev.js
 
 # VSCode
 .vscode
