@@ -5,6 +5,7 @@
     "interactive": "./scripts/interactive.js",
     "dev": "nightwatch -c ./conf/dev.js; exit 0",
     "local": "./scripts/local.runner.js -c ./conf/local.js; exit 0",
+    "deploy": "git push && git push --tags",
     "flow": "flow"
   },
   "dependencies": {
