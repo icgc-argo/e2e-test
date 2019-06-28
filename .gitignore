@@ -62,7 +62,7 @@ test_reports
 /test_reports
 browserstack.err
 chromedriver.log
-/conf/dev.js
+conf/dev.js
 
 # VSCode
 .vscode
