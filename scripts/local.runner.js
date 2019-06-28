@@ -5,6 +5,7 @@ require('dotenv').config();
 const fetch = require('isomorphic-fetch');
 const Nightwatch = require('nightwatch');
 const browserstack = require('browserstack-local');
+const path = require('path');
 
 // Code to start browserstack local before start of test
 let bs_local;
@@ -28,7 +29,7 @@ const onBsStart = function(error) {
 };
 
 try {
-  process.mainModule.filename = './node_modules/.bin/nightwatch';
+  process.mainModule.filename = path.resolve(__dirname, '../node_modules/.bin/nightwatch');
 
   console.log('Connecting local');
   Nightwatch.bs_local = bs_local = new browserstack.Local();

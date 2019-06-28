@@ -1,10 +1,11 @@
-FROM mhart/alpine-node:latest
+FROM node:10.11.0
 
-WORKDIR /usr/src
+# WORKDIR /usr/src
+# WORKDIR /
 
 COPY . .
 
-RUN NODE_ENV=production npm ci
+RUN npm ci
 
 ENV NODE_PATH=./
 ENV UI_ROOT=http://localhost:8080
