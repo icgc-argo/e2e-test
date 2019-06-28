@@ -1,6 +1,6 @@
 {
   "name": "argo-e2e",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "interactive": "./scripts/interactive.js",
     "dev": "nightwatch -c ./conf/dev.js; exit 0",
