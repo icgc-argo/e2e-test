@@ -73,6 +73,10 @@ This recorder allows basic recording: https://github.com/vvscode/js--nightwatch-
   - prefer over xpath or difficult selectors for clean and concise tests
   - use IDs over variable selectors eg. nth-child(2) makes for a brittle test
 
+## Production run
+
+This test package has been containerized with Docker and published on Dockerhub here: https://cloud.docker.com/u/icgcargo/repository/docker/icgcargo/e2e-test
+
 ## TODO:
 
 [ ] - local dev, throw errors if drivers aren't installed
