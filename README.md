@@ -76,6 +76,14 @@ This recorder allows basic recording: https://github.com/vvscode/js--nightwatch-
 ## Production run
 
 This test package has been containerized with Docker and published on Dockerhub here: https://cloud.docker.com/u/icgcargo/repository/docker/icgcargo/e2e-test
+The following command should work for a CI run:
+```bash
+docker run --network="host" \
+  -e "BROWSERSTACK_ACCESS_KEY=<browserstack_access_key>" \
+  -e "BROWSERSTACK_USER=<browserstack_user>" \
+  -e "UI_ROOT=<ui_url>"  \
+  icgcargo/e2e-test:<version>
+```
 
 ## TODO:
 
