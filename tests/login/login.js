@@ -1,27 +1,19 @@
-const { updateStatus, visitPath } = require('../../helpers');
+const { updateStatus, buildUrl, loginAs, TEST_USERS } = require('../../helpers');
 
 module.exports = {
+  tags: ['login'],
   desiredCapabilities: {
     name: 'Login',
   },
 
-  'User page exists': browser => {
-    visitPath(browser)('/')
-      .waitForElementVisible('body')
-      .assert.containsText('h1', 'Welcome to Argo!')
+  'Login as DCC Admin': browser => {
+    loginAs(browser)(TEST_USERS.DCC_ADMIN)
+      .assert.urlEquals(
+        buildUrl('submission/program'),
+        'DCC Admin was redirected to the All Programs page after login',
+      )
       .end();
   },
-
-  /*
-  "User can login": browser => {
-    browser
-      .url("http://localhost:8080")
-      .waitForElementVisible("body")
-      .click("#link-login")
-      .waitForElementVisible("#google-log-in")
-      .click("#google-log-in");
-  },
-  */
 
   afterEach: (browser, done) => {
     const result = browser.currentTest.results;
