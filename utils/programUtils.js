@@ -2,7 +2,7 @@ const { TEST_USERS } = require('../helpers');
 
 const generateProgram = () => {
   const createTime = new Date();
-  const shortName = `Z${Math.floor(createTime.getTime() / 1000) % 10000000}-CA`.replace(/0/, '1');
+  const shortName = `Z${Math.floor(createTime.getTime() / 1000) % 10000000}-CA`;
   return {
     name: `Auto Generated Program ${shortName} - ${createTime.toISOString()}`,
     shortName,
