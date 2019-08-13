@@ -53,7 +53,7 @@ module.exports = {
     // Ensure success:
     // Navigate to program list, look for success toast, ensure that our new program is in the program list
     page
-      .waitForElementVisible('#primary-action-create-program', 120000)
+      .waitForElementVisible('#primary-action-create-program', 20000)
       .assert.urlEquals(buildUrl('submission/program'))
       .perform(() => {
         performWithValues(browser)('div.MenuItemContent button', menuItems =>
