@@ -1,6 +1,7 @@
 const { updateStatus, buildUrl, loginAsUser, TEST_USERS } = require('../../helpers');
 
 module.exports = {
+  tags: ['login'],
   desiredCapabilities: {
     name: 'Login',
   },
