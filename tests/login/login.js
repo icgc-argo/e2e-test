@@ -1,4 +1,4 @@
-const { updateStatus, buildUrl, loginAs, TEST_USERS } = require('../../helpers');
+const { updateStatus, buildUrl, loginAsUser, TEST_USERS } = require('../../helpers');
 
 module.exports = {
   tags: ['login'],
@@ -7,7 +7,7 @@ module.exports = {
   },
 
   'Login as DCC Admin': browser => {
-    loginAs(browser)(TEST_USERS.DCC_ADMIN)
+    loginAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .assert.urlEquals(
         buildUrl('submission/program'),
         'DCC Admin was redirected to the All Programs page after login',
