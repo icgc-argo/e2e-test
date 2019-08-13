@@ -12,8 +12,6 @@ const BS_USER = process.env.BROWSERSTACK_USER;
 const BS_KEY = process.env.BROWSERSTACK_ACCESS_KEY;
 const BS_API_ROOT = process.env.BROWSERSTACK_API_ROOT;
 
-<<<<<<< Updated upstream
-=======
 const TEST_USERS = {
   DCC_ADMIN: {
     email: process.env.LOGIN_USERID_DCCADMIN,
@@ -35,7 +33,6 @@ const TEST_USERS = {
   },
 };
 
->>>>>>> Stashed changes
 const updateStatus = (browser, status, reason) => {
   const sessionId = browser.sessionId;
 
@@ -72,9 +69,6 @@ const runGqlQuery = ({ query, variables }) =>
     }),
   }).then(res => res.json());
 
-<<<<<<< Updated upstream
-const visitPath = browser => path => browser.url(urlJoin(process.env.UI_ROOT, path));
-=======
 const visitPath = browser => path => browser.url(buildUrl(path));
 
 const buildUrl = path => urlJoin(process.env.UI_ROOT, path);
@@ -90,7 +84,6 @@ const loginAsUser = browser => user =>
     .setValue('input[type="password"]', user.pass)
     .click('#passwordNext')
     .waitForElementVisible('nav', 20000);
->>>>>>> Stashed changes
 
 const startAsUser = browser => user => {
   const cookie = {
@@ -135,13 +128,10 @@ module.exports = {
   runGqlQuery,
   updateStatus,
   visitPath,
-<<<<<<< Updated upstream
-=======
   buildUrl,
   loginAsUser,
   startAsUser,
   elementValues,
   performWithValues,
   TEST_USERS,
->>>>>>> Stashed changes
 };
