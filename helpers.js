@@ -57,6 +57,7 @@ const updateStatus = (browser, status, reason) => {
     .catch(err => console.log('err', err));
 };
 
+// TODO: Requires Authorization header, provide option to specify which user is making the request (or default to DCCAdmin)
 const runGqlQuery = ({ query, variables }) =>
   fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
     method: 'POST',
@@ -69,10 +70,17 @@ const runGqlQuery = ({ query, variables }) =>
     }),
   }).then(res => res.json());
 
+/*
+ * Provided a URI path, nightwatch will navigate the browser to the correct URL based on the UI_ROOT env property
+ */
 const visitPath = browser => path => browser.url(buildUrl(path));
 
 const buildUrl = path => urlJoin(process.env.UI_ROOT, path);
 
+/*
+ * Execute google login flow from the home page.
+ * WARNING! This does not work on browserstack!
+ */
 const loginAsUser = browser => user =>
   visitPath(browser)('/')
     .waitForElementVisible('#google-login')
@@ -85,6 +93,10 @@ const loginAsUser = browser => user =>
     .click('#passwordNext')
     .waitForElementVisible('nav', 20000);
 
+/*
+ * Insert JWT into cookies from env file.
+ * Simulates a logged in state without requiring the login flow.
+ */
 const startAsUser = browser => user => {
   const cookie = {
     name: 'EGO_JWT',
@@ -101,6 +113,10 @@ const startAsUser = browser => user => {
   return visitPath(browser)(user.startPath).waitForElementVisible('body', 20000);
 };
 
+/*
+ * Convenience function for getting the content of every element that matches a CSS selector
+ * Returns that content as an array
+ */
 const elementValues = browser => selector => {
   const output = [];
   browser.elements('css selector', selector, elems =>
@@ -113,6 +129,11 @@ const elementValues = browser => selector => {
   return output;
 };
 
+/*
+ * Convenience function for executing logic on the response from elementValues.
+ * Callback takes one argument which is the array of element content. Example:
+ * callback = items=>{assert(isTrue(),'was it true')}
+ */
 const performWithValues = browser => (selector, callback) => {
   let values = [];
   browser
