@@ -1,50 +1,65 @@
+const assert = require('assert');
 const urlJoin = require('url-join');
 const { orderBy } = require('lodash');
-const { runGqlQuery, visitPath, updateStatus } = require('../../helpers');
+const {
+  runGqlQuery,
+  buildUrl,
+  visitPath,
+  startAsUser,
+  TEST_USERS,
+  updateStatus,
+  performWithValues,
+} = require('../../helpers');
+
+const { generateProgram } = require('../../utils/programUtils');
+const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
 
 module.exports = {
+  tags: ['programs'],
   desiredCapabilities: {
-    name: 'Programs list page',
+    name: 'Manage Programs',
   },
 
-  'Programs list page exists': browser => {
-    visitPath(browser)('/programs')
-      .waitForElementVisible('body')
-      .end();
-  },
+  'Create New Program': browser => {
+    const program = generateProgram();
 
-  'Programs list page renders the right programs sorted by name to table': browser => {
-    const programsPage = visitPath(browser)('/programs');
-    runGqlQuery({
-      query: `
-        {
-          programs {
-            shortName
-            name
-            cancerTypes
-          }
-        }
-      `,
-    }).then(({ data: { programs } }) => {
-      // programsPage.waitForElementVisible('#programs-list-container');
-      programsPage.expect.elements(`.rt-td:nth-child(1)`).count.to.equal(programs.length);
-      orderBy(programs, 'shortName').forEach((program, i) => {
-        programsPage.assert.containsText(
-          `.rt-tr-group:nth-child(${i + 1}) .rt-td:nth-child(1)`,
-          program.name,
+    // As DCCAdmin, lets navigate to the create form page
+    const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+      .waitForElementVisible('#primary-action-create-program')
+      .click('#primary-action-create-program')
+      .waitForElementVisible('form[name=createProgram]')
+      .assert.urlEquals(buildUrl('submission/program/create'));
+
+    // Fill Form and Submit
+    page
+      .setValue('#program-name', program.name)
+      .setValue('#short-name', program.shortName)
+      .perform(() => multiSelectClick(page)('#countries-multiselect', program.countries))
+      .perform(() => multiSelectClick(page)('#cancer-types-multiselect', program.cancerTypes))
+      .perform(() => multiSelectClick(page)('#primary-sites-multiselect', program.primarySites))
+      .setValue('#commitment-level', program.commitment)
+      .perform(() => selectClick(page)('#membership-type', program.membershipType))
+      .setValue('#website', program.website)
+      .setValue('#description', program.description)
+      .perform(() => multiSelectClick(page)('#institutions-multiselect', program.insitutions))
+      .perform(() =>
+        multiCheckboxClick(page)('#checkbox-group-processing-regions', program.regions),
+      )
+      .setValue('#first-name', program.piFirstName)
+      .setValue('#last-name', program.piLastName)
+      .setValue('#email', program.piEmail)
+      .click('#button-submit-create-program-form');
+
+    // Ensure success:
+    // Navigate to program list, look for success toast, ensure that our new program is in the program list
+    page
+      .waitForElementVisible('#primary-action-create-program', 120000)
+      .assert.urlEquals(buildUrl('submission/program'))
+      .perform(() => {
+        performWithValues(browser)('div.MenuItemContent button', menuItems =>
+          assert.ok(menuItems.includes(program.shortName), 'Program Found in List'),
         );
-        programsPage.assert.containsText(
-          `.rt-tr-group:nth-child(${i + 1}) .rt-td:nth-child(2)`,
-          program.shortName,
-        );
-        program.cancerTypes.forEach(cancerType => {
-          programsPage.assert.containsText(
-            `.rt-tr-group:nth-child(${i + 1}) .rt-td:nth-child(3)`,
-            cancerType,
-          );
-        });
       });
-    });
   },
 
   afterEach: (browser, done) => {
