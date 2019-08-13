@@ -22,7 +22,7 @@ const commonCapabilities = {
 };
 
 const config = {
-  src_folders: ['../tests'],
+  src_folders: ['../tests/programs'],
   output_folder: './test_reports',
   selenium: {
     start_process: false,

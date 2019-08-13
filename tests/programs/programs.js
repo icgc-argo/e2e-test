@@ -59,7 +59,8 @@ module.exports = {
         performWithValues(browser)('div.MenuItemContent button', menuItems =>
           assert.ok(menuItems.includes(program.shortName), 'Program Found in List'),
         );
-      });
+      })
+      .end();
   },
 
   afterEach: (browser, done) => {
