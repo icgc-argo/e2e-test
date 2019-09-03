@@ -18,7 +18,7 @@ const commonCapabilities = {
   project: process.env.BROWSERSTACK_PROJECT_NAME,
   host: process.env.BROWSERSTACK_SELENIUM_HOST,
   port: 80,
-  browser: 'chrome',
+  ...OSX_CHROME_LATEST,
 };
 
 const config = {
