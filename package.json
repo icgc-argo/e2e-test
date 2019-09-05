@@ -4,7 +4,8 @@
   "scripts": {
     "interactive": "./scripts/interactive.js",
     "nightwatch": "nightwatch -c ./conf/dev.js; exit 0",
-    "browserstack": "./scripts/local.runner.js -c ./conf/local.js; exit 0",
+    "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js; exit 0",
+    "browserstack-all": "./scripts/local.runner.js -c ./conf/browserstack-chrome.js; ./scripts/local.runner.js -c ./conf/browserstack-firefox.js; exit 0",
     "deploy": "git push && git push --tags",
     "flow": "flow"
   },

@@ -45,7 +45,7 @@ const run = async () => {
   } else if (type === TEST_TYPE.BROWERSTACK_LOCAL) {
     const { env } = await askEnv(browserstackEnvs);
     log(info(`Running ${type} test in ${env} environment`));
-    shell.exec(`/scripts/local.runner.js -c /conf/local.js -e ${env}`);
+    shell.exec(`/scripts/local.runner.js -c /conf/browserstack-default.js -e ${env}`);
   }
 };
 
