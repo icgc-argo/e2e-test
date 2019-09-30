@@ -43,9 +43,9 @@ spec:
             }
         }
         stage('Push to dockerhub') {
-            // when {
-            //     branch "master"
-            // }
+            when {
+                branch "master"
+            }
             steps {
                 container('docker') {
                     withCredentials([usernamePassword(credentialsId:'argoDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
