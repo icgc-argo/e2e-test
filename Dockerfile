@@ -9,9 +9,9 @@ RUN npm ci
 
 ENV NODE_PATH=./
 ENV UI_ROOT=http://localhost:8080
-ENV EGO_API_ROOT=https://ego.qa.argo.cancercollaboratory.org
-ENV EGO_CLIENT_ID=platform-ui-qa
-ENV GATEWAY_API_ROOT=https://argo-gateway.qa.argo.cancercollaboratory.org
+ENV EGO_API_ROOT=http://localhost:9000
+ENV EGO_CLIENT_ID=
+ENV GATEWAY_API_ROOT=
 ENV BROWSERSTACK_ACCESS_KEY=
 ENV BROWSERSTACK_USER=
 ENV BROWSERSTACK_API_ROOT=https://api.browserstack.com/automate
@@ -29,4 +29,4 @@ ENV TOKEN_DCCADMIN=
 ENV TOKEN_PROGRAM_ADMIN_MULTI=
 ENV TOKEN_DCCADMIN_PROGRAM_ADMIN_SINGLE=
 
-CMD [ "npm", "run", "local" ]
+CMD [ "npm", "run", "browserstack" ]

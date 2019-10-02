@@ -3,9 +3,9 @@
   "version": "0.0.3",
   "scripts": {
     "interactive": "./scripts/interactive.js",
-    "nightwatch": "nightwatch -c ./conf/dev.js; exit 0",
-    "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js; exit 0",
-    "browserstack-all": "./scripts/local.runner.js -c ./conf/browserstack-chrome.js; ./scripts/local.runner.js -c ./conf/browserstack-firefox.js; exit 0",
+    "nightwatch": "nightwatch -c ./conf/dev.js",
+    "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js",
+    "browserstack-all": "./scripts/local.runner.js -c ./conf/browserstack-chrome.js; ./scripts/local.runner.js -c ./conf/browserstack-firefox.js",
     "deploy": "git push && git push --tags",
     "flow": "flow"
   },
