@@ -19,13 +19,13 @@ const TEST_USERS = {
     token: process.env.TOKEN_DCCADMIN,
     startPath: '/submission/program',
   },
-  PRGOGRAM_ADMIN_SINGLE: {
+  PROGRAM_ADMIN_SINGLE: {
     email: process.env.LOGIN_USERID_PROGRAM_ADMIN_SINGLE,
     pass: process.env.LOGIN_USERPASS_PROGRAM_ADMIN_SINGLE,
     token: process.env.TOKEN_PROGRAM_ADMIN_SINGLE,
     startPath: '/submission/program/PACA-AU/dashboard',
   },
-  PRGOGRAM_ADMIN_MULTI: {
+  PROGRAM_ADMIN_MULTI: {
     email: process.env.LOGIN_USERID_PROGRAM_ADMIN_MULTI,
     pass: process.env.LOGIN_USERPASS_PROGRAM_ADMIN_MULTI,
     token: process.env.TOKEN_PROGRAM_ADMIN_MULTI,
