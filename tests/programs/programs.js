@@ -65,6 +65,41 @@ module.exports = {
       .end();
   },
 
+  'Join a Program with wrong email': browser => {
+    let inviteId;
+
+    loginAsUser(browser)(TEST_USERS.DCC_ADMIN)
+      .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
+      .click('#add-users')
+      .setValue('[aria-label="First name"]', 'admin')
+      .setValue('[aria-label="Last name"]', 'single')
+      .setValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
+      .click('#modal-add-users');
+
+    browser
+      .url(process.env.MAILHOG_ROOT)
+      .click('xpath', `//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
+      .frame('preview-html', function() {
+        this.getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
+          inviteId = r.value.match(/[^\/]*$/)[0];
+          this.url(buildUrl(`/submission/program/join/login/${inviteId}`))
+            .waitForElementVisible('#google-login', 10000)
+            .click('#google-login')
+            .deleteCookies()
+            .refresh()
+            .waitForElementVisible('input[type="email"]')
+            .setValue('input[type="email"]', TEST_USERS.PROGRAM_ADMIN_MULTI.email)
+            .click('#identifierNext')
+            .waitForElementVisible('input[type="password"]')
+            .setValue('input[type="password"]', TEST_USERS.PROGRAM_ADMIN_MULTI.pass)
+            .click('#passwordNext')
+            .useXpath()
+            .waitForElementVisible(`//*[contains(text(), 'Incorrect email address')]`);
+        });
+      })
+      .end();
+  },
+
   'Join a Program': browser => {
     let inviteId;
 
@@ -102,8 +137,8 @@ module.exports = {
             .setValue('[aria-label="last-name-input"]', 'test')
             .setValue('[aria-label="department-input"]', 'oicr')
             .click('#join-now')
-            .pause(1000)
-            .assert.urlContains(program.shortName);
+            .useXpath()
+            .waitForElementVisible(`//*[contains(text(), 'Welcome to')]`);
         });
       })
       .end();
