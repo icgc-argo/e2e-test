@@ -37,7 +37,7 @@
     "graphql-tag": "^2.10.1",
     "inquirer": "^6.3.1",
     "isomorphic-fetch": "^2.2.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "nightwatch": "^1.0.19",
     "nodemon": "^1.19.0",
     "plop": "^2.3.0",
