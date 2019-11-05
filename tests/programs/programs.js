@@ -18,6 +18,13 @@ const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../uti
 
 const program = generateProgram();
 
+const waitForElementContainingText = page => (text, elementTag = '*', timeout = 10000) => {
+  return page
+    .useXpath()
+    .waitForElementVisible(`//${elementTag}[contains(text(), '${text}')][1]`, timeout)
+    .useCss();
+};
+
 module.exports = {
   tags: ['programs'],
   desiredCapabilities: {
@@ -33,7 +40,7 @@ module.exports = {
       .assert.urlEquals(buildUrl('submission/program/create'));
 
     // Fill Form and Submit
-    page
+    waitForElementContainingText(page)('All Programs')
       .setValue('#program-name', program.name)
       .setValue('#short-name', program.shortName)
       .perform(() => multiSelectClick(page)('#countries-multiselect', program.countries))
