@@ -6,11 +6,10 @@ const {
   runGqlQuery,
   buildUrl,
   visitPath,
-  startAsUser,
   TEST_USERS,
   updateStatus,
   performWithValues,
-  loginAsUser,
+  startAsUser,
 } = require('../../helpers');
 
 const { generateProgram } = require('../../utils/programUtils');
@@ -26,7 +25,7 @@ module.exports = {
 
   'Create New Program': browser => {
     // As DCCAdmin, lets navigate to the create form page
-    const page = loginAsUser(browser)(TEST_USERS.DCC_ADMIN)
+    const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .waitForElementVisible('#primary-action-create-program')
       .click('#primary-action-create-program')
       .waitForElementVisible('form[name=createProgram]')
@@ -68,7 +67,7 @@ module.exports = {
   'Join a Program with wrong email': browser => {
     let inviteId;
 
-    loginAsUser(browser)(TEST_USERS.DCC_ADMIN)
+    startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
       .click('#add-users')
       .setValue('[aria-label="First name"]', 'admin')
@@ -103,7 +102,7 @@ module.exports = {
   'Join a Program': browser => {
     let inviteId;
 
-    loginAsUser(browser)(TEST_USERS.DCC_ADMIN)
+    startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
       .click('#add-users')
       .setValue('[aria-label="First name"]', 'admin')
