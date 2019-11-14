@@ -56,11 +56,11 @@ module.exports = {
     page
       .waitForElementVisible('#primary-action-create-program', 20000)
       .assert.urlEquals(buildUrl('submission/program'))
-      .perform(() => {
-        performWithValues(browser)('div.MenuItemContent button', menuItems =>
-          assert.ok(menuItems.includes(program.shortName), 'Program Found in List'),
-        );
-      })
+      .useXpath()
+      .waitForElementVisible(
+        `//div[@class='MenuItemContent']//button[contains(text(), ${program.shortName})]`,
+      )
+      .useCss()
       .end();
   },
 
