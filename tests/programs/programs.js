@@ -132,12 +132,12 @@ module.exports = {
             .setValue('[aria-label="last-name-input"]', 'test')
             .setValue('[aria-label="department-input"]', 'oicr')
             .click('#join-now')
-            .useXpath()
-            .waitForElementVisible(
-              `//*[contains(text(), 'Welcome to ${program.shortName}!')]`,
-              10000,
-            )
-            .useCss()
+            // .useXpath()
+            // .waitForElementVisible(
+            //   `//*[contains(text(), 'Welcome to ${program.shortName}!')]`,
+            //   10000,
+            // )
+            // .useCss()
             .end();
         });
       });
