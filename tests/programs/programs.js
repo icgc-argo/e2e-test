@@ -64,44 +64,45 @@ module.exports = {
       .end();
   },
 
-  'Join a Program with wrong email': browser => {
-    let inviteId;
+  // 'Join a Program with wrong email': browser => {
+  //   let inviteId;
 
-    startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
-      .click('#add-users')
-      .setValue('[aria-label="First name"]', 'admin')
-      .setValue('[aria-label="Last name"]', 'single')
-      .setValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
-      .click('#modal-add-users');
+  //   startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+  //     .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
+  //     .click('#add-users')
+  //     .setValue('[aria-label="First name"]', 'admin')
+  //     .setValue('[aria-label="Last name"]', 'single')
+  //     .setValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
+  //     .click('#modal-add-users');
 
-    browser
-      .url(process.env.MAILHOG_ROOT)
-      .click('xpath', `//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
-      .frame('preview-html', function() {
-        this.getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
-          inviteId = r.value.match(/[^\/]*$/)[0];
-          this.url(buildUrl(`/submission/program/join/login/${inviteId}`))
-            .waitForElementVisible('#google-login', 10000)
-            .click('#google-login')
-            .deleteCookies()
-            .refresh()
-            .waitForElementVisible('input[type="email"]')
-            .setValue('input[type="email"]', TEST_USERS.PROGRAM_ADMIN_MULTI.email)
-            .click('#identifierNext')
-            .waitForElementVisible('input[type="password"]')
-            .setValue('input[type="password"]', TEST_USERS.PROGRAM_ADMIN_MULTI.pass)
-            .click('#passwordNext')
-            .useXpath()
-            .waitForElementVisible(`//*[contains(text(), 'Incorrect email address')]`);
-        });
-      })
-      .end();
-  },
+  //   browser
+  //     .url(process.env.MAILHOG_ROOT)
+  //     .click('xpath', `//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
+  //     .frame('preview-html', function() {
+  //       this.getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
+  //         inviteId = r.value.match(/[^\/]*$/)[0];
+  //         this.url(buildUrl(`/submission/program/join/login/${inviteId}`))
+  //           .waitForElementVisible('#google-login', 10000)
+  //           .click('#google-login')
+  //           .deleteCookies()
+  //           .refresh()
+  //           .waitForElementVisible('input[type="email"]')
+  //           .setValue('input[type="email"]', TEST_USERS.PROGRAM_ADMIN_MULTI.email)
+  //           .click('#identifierNext')
+  //           .waitForElementVisible('input[type="password"]')
+  //           .setValue('input[type="password"]', TEST_USERS.PROGRAM_ADMIN_MULTI.pass)
+  //           .click('#passwordNext')
+  //           .useXpath()
+  //           .waitForElementVisible(`//*[contains(text(), 'Incorrect email address')]`);
+  //       });
+  //     })
+  //     .end();
+  // },
 
   'Join a Program': browser => {
     let inviteId;
 
+    // adds user
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
       .click('#add-users')
@@ -110,36 +111,42 @@ module.exports = {
       .setValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
       .click('#modal-add-users');
 
+    // tests if email was sent to mailhog
     browser
       .url(process.env.MAILHOG_ROOT)
       .click('xpath', `//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
-      .frame('preview-html', function() {
-        this.getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
-          inviteId = r.value.match(/[^\/]*$/)[0];
-          this.url(buildUrl(`/submission/program/join/login/${inviteId}`))
-            .waitForElementVisible('#google-login', 10000)
-            .click('#google-login')
-            .deleteCookies()
-            .refresh()
-            .waitForElementVisible('input[type="email"]')
-            .setValue('input[type="email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
-            .click('#identifierNext')
-            .waitForElementVisible('input[type="password"]')
-            .setValue('input[type="password"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.pass)
-            .click('#passwordNext')
-            .pause(3000)
-            .assert.urlContains('/join/details')
-            .perform(() =>
-              multiSelectClick(this)('#institution-multiselect', ['Aarhus University']),
-            )
-            .setValue('[aria-label="first-name-input"]', 'e2e')
-            .setValue('[aria-label="last-name-input"]', 'test')
-            .setValue('[aria-label="department-input"]', 'oicr')
-            .click('#join-now')
-            .useXpath()
-            .waitForElementVisible(`//*[contains(text(), 'Welcome to')]`);
-        });
+      .getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
+        inviteId = r.value.match(/[^\/]*$/)[0];
+        browser
+          .useXpath()
+          .click('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]")
+          .windowHandle(function(result) {
+            console.log('result: ', result);
+            const [currentWindow, newWindow] = result.value;
+            browser
+              .pause(3000)
+              .switchWindow(newWindow)
+              .useXpath()
+              .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`);
+          });
       })
+      // .frame('preview-html', function() {
+      //   browser.getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
+      //     inviteId = r.value.match(/[^\/]*$/)[0];
+      //     browser
+      //       .useXpath()
+      //       .click('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]")
+      //       .windowHandle(function(result) {
+      //         console.log('result: ', result);
+      //         const [currentWindow, newWindow] = result.value;
+      //         browser
+      //           .pause(3000)
+      //           .switchWindow(newWindow)
+      //           .useXpath()
+      //           .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`);
+      //       });
+      //   });
+      // })
       .end();
   },
 
@@ -153,3 +160,26 @@ module.exports = {
     done();
   },
 };
+
+// this.url(buildUrl(`/submission/program/join/login/${inviteId}`))
+//   .waitForElementVisible('#google-login', 10000)
+//   .click('#google-login')
+//   .deleteCookies()
+//   .refresh()
+//   .waitForElementVisible('input[type="email"]')
+//   .setValue('input[type="email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
+//   .click('#identifierNext')
+//   .waitForElementVisible('input[type="password"]')
+//   .setValue('input[type="password"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.pass)
+//   .click('#passwordNext')
+//   .pause(3000)
+//   .assert.urlContains('/join/details')
+//   .perform(() =>
+//     multiSelectClick(this)('#institution-multiselect', ['Aarhus University']),
+//   )
+//   .setValue('[aria-label="first-name-input"]', 'e2e')
+//   .setValue('[aria-label="last-name-input"]', 'test')
+//   .setValue('[aria-label="department-input"]', 'oicr')
+//   .click('#join-now')
+//   .useXpath()
+//   .waitForElementVisible(`//*[contains(text(), 'Welcome to')]`);
