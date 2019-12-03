@@ -58,17 +58,21 @@ const updateStatus = (browser, status, reason) => {
 };
 
 // TODO: Requires Authorization header, provide option to specify which user is making the request (or default to DCCAdmin)
-const runGqlQuery = ({ query, variables }) =>
-  fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  }).then(res => res.json());
+const runGqlQuery = async ({ query, variables, jwt }) => {
+  return new Promise((resolve, reject) => {
+    fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({
+        query,
+        variables,
+      }),
+    }).then(res => resolve(res.json()));
+  });
+};
 
 /*
  * Provided a URI path, nightwatch will navigate the browser to the correct URL based on the UI_ROOT env property
@@ -145,7 +149,18 @@ const performWithValues = browser => (selector, callback) => {
     });
 };
 
+const afterEach = (browser, done) => {
+  const result = browser.currentTest.results;
+  // manual failure check for browserstack API call
+  if (result.failed > 0) {
+    const err = result.lastError.message;
+    updateStatus(browser, 'failed', err);
+  }
+  done();
+};
+
 module.exports = {
+  afterEach,
   runGqlQuery,
   updateStatus,
   visitPath,

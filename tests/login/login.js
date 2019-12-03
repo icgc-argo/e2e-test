@@ -1,4 +1,4 @@
-const { updateStatus, buildUrl, loginAsUser, TEST_USERS } = require('../../helpers');
+const { afterEach, updateStatus, buildUrl, loginAsUser, TEST_USERS } = require('../../helpers');
 
 module.exports = {
   tags: ['login'],
@@ -15,13 +15,5 @@ module.exports = {
       .end();
   },
 
-  afterEach: (browser, done) => {
-    const result = browser.currentTest.results;
-    // manual failure check for browserstack API call
-    if (result.failed > 0) {
-      const err = result.lastError.message;
-      updateStatus(browser, 'failed', err);
-    }
-    done();
-  },
+  afterEach,
 };

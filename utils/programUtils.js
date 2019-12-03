@@ -1,4 +1,5 @@
-const { TEST_USERS } = require('../helpers');
+const { TEST_USERS, runGqlQuery } = require('../helpers');
+const { request } = require('graphql-request');
 
 const generateProgram = () => {
   const createTime = new Date();
@@ -6,21 +7,56 @@ const generateProgram = () => {
   return {
     name: `Auto Generated Program ${shortName} - ${createTime.toISOString()}`,
     shortName,
+    description: `This program was automatically generated for test purposes at ${createTime}`,
+    commitmentDonors: 1234,
+    website: 'https://example.com',
+    institutions: ['OICR'],
     countries: ['Canada', 'United States'],
+    regions: ['North America', 'South America'],
     cancerTypes: ['Brain cancer', 'Bladder cancer'],
     primarySites: ['Brain', 'Bladder'],
-    commitment: 1234,
     membershipType: 'FULL',
-    website: 'https://example.com',
-    description: `This program was automatically generated for test purposes at ${createTime}`,
-    insitutions: ['OICR'],
-    regions: ['North America', 'South America'],
-    piFirstName: 'Oicr',
-    piLastName: 'Testuser',
-    piEmail: TEST_USERS.DCC_ADMIN.email,
+    admins: [
+      {
+        firstName: 'Oicr',
+        lastName: 'Testuser',
+        email: TEST_USERS.DCC_ADMIN.email,
+        role: 'ADMIN',
+      },
+    ],
   };
+};
+
+const createProgram = ({ jwt, program }) => {
+  const query = `mutation CREATE_PROGRAM($program:ProgramInput!) {
+    createProgram(program:$program)
+    {
+      shortName
+      description
+      name
+      commitmentDonors
+      submittedDonors
+      genomicDonors
+      website
+      institutions
+      countries
+      regions
+      cancerTypes
+      membershipType
+      primarySites
+      users {
+        email
+        firstName
+        lastName
+        role
+      }
+    }
+  }`;
+
+  return runGqlQuery({ jwt, query, variables: { program } });
 };
 
 module.exports = {
   generateProgram,
+  createProgram,
 };
