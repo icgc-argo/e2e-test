@@ -15,5 +15,10 @@ module.exports = {
       .end();
   },
 
-  afterEach,
+  'Login as DCC Admin': browser => {
+    loginAsUser(browser)(TEST_USERS.PROGRAM_ADMIN_SINGLE)
+      .assert.urlContains('submission/program')
+      .assert.urlContains('dashboard')
+      .end();
+  },
 };

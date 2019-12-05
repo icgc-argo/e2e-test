@@ -1,5 +1,6 @@
-const { TEST_USERS, runGqlQuery } = require('../helpers');
-const { request } = require('graphql-request');
+const { TEST_USERS } = require('../helpers');
+const { runGqlQuery, runGqlUpload, uploadFileFromString } = require('./gatewayUtils');
+const { generateRegistrationFile } = require('./clinicalData');
 
 const generateProgram = () => {
   const createTime = new Date();
@@ -56,7 +57,86 @@ const createProgram = ({ jwt, program }) => {
   return runGqlQuery({ jwt, query, variables: { program } });
 };
 
+const registerSamples = async ({ jwt, shortName, count }) => {
+  const file = generateRegistrationFile({ shortName, count });
+  const query = `mutation ($file:Upload!, $shortName:String!){
+    uploadClinicalRegistration(shortName:$shortName, registrationFile:$file) {
+      id
+      programShortName
+      creator
+      fileName
+      createdAt
+      records {
+        row
+        fields {
+          name
+          value
+        }
+      }
+      errors {
+        type
+        message
+        row
+        field
+        value
+        sampleId
+        donorId
+        specimenId
+      }
+      fileErrors {
+        message
+        fileNames
+        code
+      }
+      newDonors {
+        count
+        rows
+        names
+        values {
+          name
+          rows
+        }
+      }
+      newSpecimens {
+        count
+        rows
+        names
+        values {
+          name
+          rows
+        }
+      }
+      newSamples {
+        count
+        rows
+        names
+        values {
+          name
+          rows
+        }
+      }
+      alreadyRegistered {
+        count
+        rows
+        names
+        values {
+          name
+          rows
+        }
+      }
+    }
+  }`;
+  const response = await runGqlUpload({
+    jwt,
+    query,
+    variables: { shortName },
+    // files: [],
+    files: [uploadFileFromString(file, 'sample_registration.tsv', 'file')],
+  });
+};
+
 module.exports = {
   generateProgram,
   createProgram,
+  registerSamples,
 };

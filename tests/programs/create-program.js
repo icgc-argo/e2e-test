@@ -4,7 +4,6 @@ const { orderBy } = require('lodash');
 
 const {
   afterEach,
-  runGqlQuery,
   buildUrl,
   visitPath,
   TEST_USERS,
@@ -14,6 +13,7 @@ const {
 } = require('../../helpers');
 
 const { generateProgram } = require('../../utils/programUtils');
+const { runGqlQuery } = require('../../utils/gatewayUtils');
 const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
 
 const program = generateProgram();

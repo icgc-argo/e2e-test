@@ -3,7 +3,6 @@
  * Browserstack API helpers
  *
  */
-
 require('dotenv').config();
 const fetch = require('isomorphic-fetch');
 const urlJoin = require('url-join');
@@ -55,23 +54,6 @@ const updateStatus = (browser, status, reason) => {
     .then(resp => resp.json())
     .then(console.log)
     .catch(err => console.log('err', err));
-};
-
-// TODO: Requires Authorization header, provide option to specify which user is making the request (or default to DCCAdmin)
-const runGqlQuery = async ({ query, variables, jwt }) => {
-  return new Promise((resolve, reject) => {
-    fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
-      },
-      body: JSON.stringify({
-        query,
-        variables,
-      }),
-    }).then(res => resolve(res.json()));
-  });
 };
 
 /*
@@ -161,7 +143,6 @@ const afterEach = (browser, done) => {
 
 module.exports = {
   afterEach,
-  runGqlQuery,
   updateStatus,
   visitPath,
   buildUrl,
