@@ -27,7 +27,24 @@ const registrationRecord = (shortName, count) => {
     'Saliva',
     'Skin',
   ]);
-  const normalDesignation = count % 2 === 0 ? 'Normal' : 'Primary tumour';
+  const normalDesignation = count % 2 === 0 ? 'Normal' : 'Tumour';
+  const specimenType = chooseOne([
+    'Normal',
+    'Normal - tissue adjacent to primary tumour',
+    'Primary tumour',
+    'Primary tumour - adjacent to normal',
+    'Primary tumour - additional new primary',
+    'Recurrent tumour',
+    'Metastatic tumour',
+    'Metastatic tumour - metastasis local to lymph node',
+    'Metastatic tumour - metastasis to distant location',
+    'Metastatic tumour - additional metastatic',
+    'Xenograft - derived from primary tumour',
+    'Xenograft - derived from tumour cell line',
+    'Cell line - derived from xenograft tumour',
+    'Cell line - derived from tumour',
+    'Cell line - derived from normal',
+  ]);
   const sampleId = `sa-${shortName}-${count}`;
   const sampleType = chooseOne([
     'Total DNA',
@@ -39,8 +56,7 @@ const registrationRecord = (shortName, count) => {
     'polyA+ RNA',
     'Other RNA fractions',
   ]);
-
-  return `${shortName}\t${donorId}\t${gender}\t${specimenId}\t${source}\t${normalDesignation}\t${sampleId}\t${sampleType}`;
+  return `${shortName}\t${donorId}\t${gender}\t${specimenId}\t${source}\t${normalDesignation}\t${specimenType}\t${sampleId}\t${sampleType}`;
 };
 
 const generateRegistrationFile = ({ shortName, count, submitterIdStart = 0 }) => {
