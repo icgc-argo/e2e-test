@@ -15,7 +15,6 @@ const generateProgram = () => {
     countries: ['Canada', 'United States'],
     regions: ['North America', 'South America'],
     cancerTypes: ['Brain cancer', 'Bladder cancer'],
-    primarySites: ['Brain', 'Bladder'],
     membershipType: 'FULL',
     admins: [
       {
