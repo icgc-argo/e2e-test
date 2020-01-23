@@ -72,4 +72,29 @@ module.exports = {
       .text.to.contain('new samples have been registered');
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
+  'Submission - Empty State': browser => {
+    startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
+      buildUrl(`/submission/program/${program.shortName}/clinical-submission`),
+    );
+    browser.assert.visible('#button-submission-file-select');
+    browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
+  },
+  'Submission - Upload Clinical Data': browser => {
+    startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+      .perform(async () => {
+        await submitClinicalData({
+          jwt: TEST_USERS.DCC_ADMIN.token,
+          shortName: program.shortName,
+          count: 5,
+        });
+      })
+      .pause(2500)
+      .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
+    browser.assert.visible('#button-register-clear-file');
+    browser.expect.element('#button-register-samples-commit').to.not.have.attribute('disabled');
+
+    browser.click('#button-register-clear-file').pause(2000);
+    browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
+  },
 };
