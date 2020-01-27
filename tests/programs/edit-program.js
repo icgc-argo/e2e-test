@@ -32,7 +32,7 @@ module.exports = {
   'Edit Program': browser => {
     // As DCCAdmin, lets navigate to the create form page
     const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .pause(2500)
+      .pause(2000)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?activeTab=profile`));
 
     // Fill Form and Submit
@@ -57,8 +57,9 @@ module.exports = {
       .perform(() => multiSelectClick(page)('#institutions-multiselect', programEdits.institutions))
       .perform(() =>
         multiCheckboxClick(page)('#checkbox-group-processing-regions', programEdits.regions),
-      )
-      .click('#button-submit-edit-program-form');
+      );
+    browser.pause(4000);
+    page.click('#button-submit-edit-program-form');
     browser.pause(4000);
     browser.expect.element('#button-submit-edit-program-form').to.have.attribute('disabled');
     browser.expect.element('.toastStackContainer').text.to.contain('Success!');
