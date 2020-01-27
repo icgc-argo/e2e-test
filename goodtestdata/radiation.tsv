@@ -1,0 +1,2 @@
+program_id	submitter_donor_id	submitter_treatment_id	radiation_therapy_modality	application_form	radiation_therapy_fractions	radiation_therapy_dosage	anatomical_site_irradiated
+DASH-CA	DASH-1	T_03	Electron	External	33	77	Lung
