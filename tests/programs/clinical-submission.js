@@ -82,7 +82,7 @@ module.exports = {
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
-  'Submission - Upload Clinical Data and Clear Submission': browser => {
+  'Submission - Upload Good Clinical Data and Clear Submission': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async () => {
         await submitClinicalData({
@@ -96,7 +96,6 @@ module.exports = {
     browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
-    //browser.assert.visible('#button-clear-selected-file');
 
     browser.click('#button-clear-submission').pause(2500);
 
@@ -106,32 +105,7 @@ module.exports = {
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  // 'Submission - Upload Bad Clinical Data and Clear Selected Files': browser => {
-  //   startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-  //     .perform(async () => {
-  //       await submitClinicalData({
-  //         jwt: TEST_USERS.DCC_ADMIN.token,
-  //         shortName: program.shortName,
-  //         good: 'false',
-  //       });
-  //     })
-  //     .pause(2500)
-  //     .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
-  //   browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
-  //   browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
-  //   browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
-  //   browser.assert.visible('#button-clear-selected-file');
-
-  //   browser.click('#button-clear-selected-file').pause(2000);
-
-  //   // Add logic here
-
-  //   browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
-  //   browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
-  //   browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
-  // },
-
-  'Submission - Upload Clinical Data and Validate': browser => {
+  'Submission - Upload Good Clinical Data, Validate, and Clear Submission': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async () => {
         await submitClinicalData({
@@ -145,13 +119,64 @@ module.exports = {
     browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
-    //browser.assert.visible('#button-clear-selected-file');
 
     browser.click('#button-validate-submission').pause(2000);
 
     browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.not.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
-    //browser.assert.visible('#button-clear-selected-file');
+
+    browser.click('#button-clear-submission').pause(2500);
+
+    browser.expect.element('.toastStackContainer').text.to.contain('Submission cleared');
+    browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
+    browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
+  },
+
+  'Submission - Upload Bad Clinical Data, Clear Selected File Upload, Validate Error, Clear Selected File, Validate': browser => {
+    startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+      .perform(async () => {
+        await submitClinicalData({
+          jwt: TEST_USERS.DCC_ADMIN.token,
+          shortName: program.shortName,
+          good: 'false',
+        });
+      })
+      .pause(2500)
+      .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
+    browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
+    browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
+    browser.expect.element('#error-submit-clinical-data').text.to.contain('found in uploaded');
+
+    browser.click('#button-clear-selected-file-upload').pause(2000);
+
+    browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
+    browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
+
+    browser.click('#button-validate-submission').pause(2000);
+
+    browser.expect
+      .element('#error-submission-sign-off')
+      .text.to.contain('found in submission workspace');
+    browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
+    browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
+    browser.assert.visible('#button-clear-selected-file');
+
+    browser.click('#button-clear-selected-file').pause(2000);
+
+    browser.expect.element('.toastStackContainer').text.to.contain('Cleared');
+    browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
+    browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
+
+    browser.click('#button-validate-submission').pause(2000);
+
+    browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
+    browser.expect.element('#button-submission-sign-off').to.not.have.attribute('disabled');
+    browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
   },
 };
