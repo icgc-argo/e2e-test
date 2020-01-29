@@ -60,7 +60,7 @@ const registrationRecord = (shortName, count) => {
 };
 
 const generateRegistrationFile = ({ shortName, count, submitterIdStart = 0 }) => {
-  const headers = `program_id\tsubmitter_donor_id\tgender\tsubmitter_specimen_id\tspecimen_tissue_source\ttumour_normal_designation\tsubmitter_sample_id\tsample_type\n`;
+  const headers = `program_id\tsubmitter_donor_id\tgender\tsubmitter_specimen_id\tspecimen_tissue_source\ttumour_normal_designation\tspecimen_type\tsubmitter_sample_id\tsample_type\n`;
   const records = [];
   for (let i = 0; i < count; i++) {
     records.push(registrationRecord(shortName, i + submitterIdStart));

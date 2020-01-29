@@ -28,6 +28,32 @@ const generateProgram = () => {
   };
 };
 
+const generateProgram2 = () => {
+  const createTime = new Date();
+  const shortName = `Z${Math.floor(createTime.getTime() / 1000) % 10000000}-CA`;
+  return {
+    name: `Auto Generated Program ${shortName} - ${createTime.toISOString()}`,
+    shortName,
+    description: `This program was automatically generated for test purposes at ${createTime}`,
+    commitmentDonors: 4321,
+    website: 'https://exampletwo.com',
+    institutions: ['Toronto General Hospital'],
+    countries: ['Antarctica'],
+    regions: ['Africa', 'South America'],
+    cancerTypes: ['Multiple'],
+    primarySites: ['Stomach', 'Kidney'],
+    membershipType: 'ASSOCIATE',
+    admins: [
+      {
+        firstName: 'Oicr',
+        lastName: 'Testuser',
+        email: TEST_USERS.DCC_ADMIN.email,
+        role: 'ADMIN',
+      },
+    ],
+  };
+};
+
 const createProgram = ({ jwt, program }) => {
   const query = `mutation CREATE_PROGRAM($program:ProgramInput!) {
     createProgram(program:$program)
@@ -59,7 +85,7 @@ const createProgram = ({ jwt, program }) => {
 
 const registerSamples = async ({ jwt, shortName, count }) => {
   const file = generateRegistrationFile({ shortName, count });
-  const query = `mutation ($file:Upload!, $shortName:String!){
+  const query = `mutation ($file:Upload!, $shortName:String!) {
     uploadClinicalRegistration(shortName:$shortName, registrationFile:$file) {
       id
       programShortName
@@ -137,6 +163,7 @@ const registerSamples = async ({ jwt, shortName, count }) => {
 
 module.exports = {
   generateProgram,
+  generateProgram2,
   createProgram,
   registerSamples,
 };
