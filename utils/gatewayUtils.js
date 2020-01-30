@@ -28,7 +28,7 @@ const uploadFileFromString = (fileData, fileName) => {
  */
 const runGqlUpload = async ({ query, variables, jwt, files, asArray = true }) => {
   const formData = new FormData();
-  const updatedVariables = { ...variables };
+  const updatedVariables = { ...variables, files: [] };
   const map = {};
   updatedVariables.files = [];
 
@@ -46,8 +46,6 @@ const runGqlUpload = async ({ query, variables, jwt, files, asArray = true }) =>
     query,
     variables: updatedVariables,
   };
-  // console.log(JSON.stringify(operations));
-  // console.log(JSON.stringify(map));
   formData.append('operations', JSON.stringify(operations));
   formData.append('map', JSON.stringify(map));
 
