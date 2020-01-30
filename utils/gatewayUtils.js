@@ -5,19 +5,17 @@ const urlJoin = require('url-join');
 // const { urlJoin } = require('../helpers');
 
 const runGqlQuery = async ({ query, variables, jwt }) => {
-  return new Promise((resolve, reject) => {
-    fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
-      },
-      body: JSON.stringify({
-        query,
-        variables,
-      }),
-    }).then(res => resolve(res.json()));
-  });
+  return fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({
+      query,
+      variables,
+    }),
+  }).then(res => res.json());
 };
 
 const uploadFileFromString = (fileData, fileName) => {
