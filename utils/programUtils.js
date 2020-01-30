@@ -1,5 +1,6 @@
 const { TEST_USERS } = require('../helpers');
 const { runGqlQuery, runGqlUpload, uploadFileFromString } = require('./gatewayUtils');
+const fs = require('fs');
 const { generateRegistrationFile } = require('./clinicalData');
 
 const generateProgram = () => {
@@ -83,10 +84,50 @@ const createProgram = ({ jwt, program }) => {
   return runGqlQuery({ jwt, query, variables: { program } });
 };
 
+const submitClinicalData = async ({ jwt, shortName, good }) => {
+  const fileTypes = [
+    'donor',
+    'follow_up',
+    'hormone_therapy',
+    'primary_diagnosis-good',
+    'radiation',
+    'sample_registration',
+    'treatment',
+  ];
+
+  const query = `mutation ($shortName: String!, $files: [Upload!])
+  {uploadClinicalSubmissions (programShortName:$shortName, clinicalFiles:$files){
+    id
+    fileErrors {
+        message
+        fileNames
+        code
+      }
+  }}`;
+
+  dataFiles = fileTypes.map(fileType => {
+    file = fs
+      .readFileSync((good ? './goodtestdata/' : './badtestdata/').concat(fileType, '.tsv'), 'utf8')
+      .split('DASH-CA')
+      .join(shortName);
+    return uploadFileFromString(file, fileType.concat('.tsv'), 'file');
+  });
+  return await runGqlUpload({
+    jwt,
+    query,
+    variables: { shortName },
+    files: dataFiles,
+  });
+};
+
 const registerSamples = async ({ jwt, shortName, count }) => {
-  const file = generateRegistrationFile({ shortName, count });
-  const query = `mutation ($file:Upload!, $shortName:String!) {
-    uploadClinicalRegistration(shortName:$shortName, registrationFile:$file) {
+  const file = fs
+    .readFileSync('./goodtestdata/sample_registration.tsv', 'utf8')
+    .split('DASH-CA')
+    .join(shortName);
+
+  const query = `mutation ($files:Upload!, $shortName:String!) {
+    uploadClinicalRegistration(shortName:$shortName, registrationFile:$files) {
       id
       programShortName
       creator
@@ -152,12 +193,13 @@ const registerSamples = async ({ jwt, shortName, count }) => {
       }
     }
   }`;
-  const response = await runGqlUpload({
+  return await runGqlUpload({
     jwt,
     query,
     variables: { shortName },
     // files: [],
     files: [uploadFileFromString(file, 'sample_registration.tsv', 'file')],
+    asArray: false,
   });
 };
 
@@ -166,4 +208,5 @@ module.exports = {
   generateProgram2,
   createProgram,
   registerSamples,
+  submitClinicalData,
 };

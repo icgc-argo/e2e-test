@@ -18,31 +18,33 @@ const runGqlQuery = async ({ query, variables, jwt }) => {
   }).then(res => res.json());
 };
 
-const uploadFileFromString = (fileData, fileName, gqlVariableName) => {
-  return { fileData, fileName, gqlVariableName };
+const uploadFileFromString = (fileData, fileName) => {
+  return { fileData, fileName };
 };
 
 /**
  *
- * @param options.files is an object of structure {fileData, fileName, gqlVariableName} - use stringToUploadFile() method to generate
+ * @param options.files is an object of structure {fileData, fileName } - use stringToUploadFile() method to generate
  */
-const runGqlUpload = async ({ query, variables, jwt, files }) => {
+const runGqlUpload = async ({ query, variables, jwt, files, asArray = true }) => {
   const formData = new FormData();
-  const updatedVariables = { ...variables };
+  const updatedVariables = { ...variables, files: [] };
   const map = {};
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const index = '' + (i + 1);
-    updatedVariables[file.gqlVariableName] = null;
-    map[index] = [`variables.${file.gqlVariableName}`];
+    if (asArray) {
+      updatedVariables.files.push(null);
+    } else {
+      updatedVariables.files = null;
+    }
+    map[index] = asArray ? [`variables.files.${i}`] : [`variables.files`];
   }
   const operations = {
     query,
     variables: updatedVariables,
   };
-  console.log(JSON.stringify(operations));
-  console.log(JSON.stringify(map));
   formData.append('operations', JSON.stringify(operations));
   formData.append('map', JSON.stringify(map));
 
