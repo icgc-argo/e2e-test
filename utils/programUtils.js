@@ -1,6 +1,7 @@
 const { TEST_USERS } = require('../helpers');
 const { runGqlQuery, runGqlUpload, uploadFileFromString } = require('./gatewayUtils');
 const fs = require('fs');
+const urljoin = require('url-join');
 const { generateRegistrationFile } = require('./clinicalData');
 
 const generateProgram = () => {
@@ -91,7 +92,6 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
     'hormone_therapy',
     'primary_diagnosis-good',
     'radiation',
-    'sample_registration',
     'treatment',
   ];
 
@@ -106,10 +106,15 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
   }}`;
 
   dataFiles = fileTypes.map(fileType => {
+    console.log(good, typeof good);
+    const folderPath = good ? './goodtestdata/' : './badtestdata/';
+    const filePath = urljoin(folderPath, `${fileType}.tsv`);
+    console.log(filePath);
     file = fs
-      .readFileSync((good ? './goodtestdata/' : './badtestdata/').concat(fileType, '.tsv'), 'utf8')
+      .readFileSync(filePath, 'utf8')
       .split('DASH-CA')
       .join(shortName);
+    console.log(file);
     return uploadFileFromString(file, fileType.concat('.tsv'), 'file');
   });
   return await runGqlUpload({
