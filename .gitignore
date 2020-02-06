@@ -66,3 +66,5 @@ conf/dev.js
 
 # VSCode
 .vscode
+
+.DS_Store
