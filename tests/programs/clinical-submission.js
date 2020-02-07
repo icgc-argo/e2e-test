@@ -105,7 +105,7 @@ module.exports = {
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  'Submission - Upload Good Clinical Data, Validate, and Clear Submission': browser => {
+  'Submission - Upload Good Clinical Data, Validate, and SignOff': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async () => {
         await submitClinicalData({
@@ -126,7 +126,16 @@ module.exports = {
     browser.expect.element('#button-submission-sign-off').to.not.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
 
-    browser.click('#button-clear-submission').pause(2500);
+    browser
+      .click('#button-submission-sign-off')
+      .pause(2500)
+      .waitForElementVisible('#modal-confirm-sign-off')
+      .click('#modal-confirm-sign-off')
+      .pause(4000);
+    browser.expect
+      .element('.toastStackContainer')
+      .text.to.contain('new samples have been registered');
+    browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
 
     browser.expect.element('.toastStackContainer').text.to.contain('Submission cleared');
     browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
