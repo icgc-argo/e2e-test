@@ -39,12 +39,13 @@ module.exports = {
   },
   'Register - Upload Samples and Clear': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async () => {
-        await registerSamples({
+      .perform(function(done) {
+        registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
           count: 5,
         });
+        done();
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/sample-registration`));
@@ -57,12 +58,13 @@ module.exports = {
   },
   'Register - Upload and Commit': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async () => {
-        await registerSamples({
+      .perform(function(done) {
+        registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
           count: 5,
         });
+        done();
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/sample-registration`));
@@ -90,12 +92,13 @@ module.exports = {
   },
   'Submission - Upload Good Clinical Data and Clear Submission': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async () => {
-        await submitClinicalData({
+      .perform(function(done) {
+        submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
           good: true,
         });
+        done();
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
@@ -114,12 +117,13 @@ module.exports = {
 
   'Submission - Upload Good Clinical Data, Validate, and Clear Submission': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async () => {
-        await submitClinicalData({
+      .perform(function(done) {
+        submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
           good: true,
         });
+        done();
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
@@ -144,12 +148,13 @@ module.exports = {
 
   'Submission - Upload Bad Clinical Data, Validate Error, Clear Selected File, Validate': browser => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async () => {
-        await submitClinicalData({
+      .perform(function(done) {
+        submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
           good: false,
         });
+        done();
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));

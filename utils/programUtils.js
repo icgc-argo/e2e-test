@@ -106,10 +106,8 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
   }}`;
 
   dataFiles = fileTypes.map(fileType => {
-    console.log(good, typeof good);
     const folderPath = good ? './goodtestdata/' : './badtestdata/';
     const filePath = urljoin(folderPath, `${fileType}.tsv`);
-    console.log(filePath);
     file = fs
       .readFileSync(filePath, 'utf8')
       .split('DASH-CA')
