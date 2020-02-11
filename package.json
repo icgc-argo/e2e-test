@@ -56,7 +56,7 @@
     "url-join": "^4.0.0"
   },
   "devDependencies": {
-    "chromedriver": "^78.0.1",
+    "chromedriver": "^80.0.1",
     "geckodriver": "^1.19.1"
   },
   "prettier": {
