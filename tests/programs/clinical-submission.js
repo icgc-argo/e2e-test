@@ -158,6 +158,7 @@ module.exports = {
           shortName: program.shortName,
           good: 'true',
         });
+        done();
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
