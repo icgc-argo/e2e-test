@@ -144,9 +144,9 @@ module.exports = {
       .waitForElementVisible('#modal-confirm-sign-off')
       .click('#modal-confirm-sign-off')
       .pause(4000);
-    // browser.expect
-    //   .element('.toastStackContainer')
-    //   .text.to.contain('');
+    browser.expect
+      .element('.toastStackContainer')
+      .text.to.contain('Successful Clinical Submission!');
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
@@ -178,9 +178,9 @@ module.exports = {
       .waitForElementVisible('#modal-confirm-sign-off')
       .click('#modal-confirm-sign-off')
       .pause(4000);
-    // browser.expect
-    //   .element('.toastStackContainer')
-    //   .text.to.contain('');
+    browser.expect
+      .element('.toastStackContainer')
+      .text.to.contain('Successful Clinical Submission!');
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
