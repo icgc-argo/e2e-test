@@ -1,13 +1,6 @@
 const assert = require('assert');
 
-const {
-  afterEach,
-  startAsUser,
-  updateStatus,
-  buildUrl,
-  loginAsUser,
-  TEST_USERS,
-} = require('../../helpers');
+const { startAsUser, buildUrl, TEST_USERS } = require('../../helpers');
 
 const {
   generateProgram,
@@ -15,7 +8,6 @@ const {
   registerSamples,
   submitClinicalData,
 } = require('../../utils/programUtils');
-const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
 
 const program = generateProgram();
 

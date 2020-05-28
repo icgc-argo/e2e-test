@@ -1,19 +1,8 @@
 const assert = require('assert');
-const urlJoin = require('url-join');
-const { orderBy } = require('lodash');
 
-const {
-  afterEach,
-  buildUrl,
-  visitPath,
-  TEST_USERS,
-  updateStatus,
-  performWithValues,
-  startAsUser,
-} = require('../../helpers');
+const { afterEach, buildUrl, TEST_USERS, startAsUser } = require('../../helpers');
 
 const { generateProgram } = require('../../utils/programUtils');
-const { runGqlQuery } = require('../../utils/gatewayUtils');
 const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
 
 const program = generateProgram();

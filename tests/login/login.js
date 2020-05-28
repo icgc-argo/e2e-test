@@ -1,4 +1,4 @@
-const { afterEach, updateStatus, buildUrl, loginAsUser, TEST_USERS } = require('../../helpers');
+const { buildUrl, loginAsUser, TEST_USERS } = require('../../helpers');
 
 module.exports = {
   tags: ['login'],
