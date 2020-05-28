@@ -17,7 +17,7 @@ const commonCapabilities = {
   'browserstack.console': 'info',
   project: process.env.BROWSERSTACK_PROJECT_NAME,
   host: process.env.BROWSERSTACK_SELENIUM_HOST,
-  port: 80,
+  port: 443,
   ...OSX_CHROME_LATEST,
 };
 
@@ -27,7 +27,7 @@ const config = {
   selenium: {
     start_process: false,
     host: process.env.BROWSERSTACK_SELENIUM_HOST,
-    port: 80,
+    port: 443,
   },
 
   test_settings: {
