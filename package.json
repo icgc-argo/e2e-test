@@ -45,7 +45,7 @@
     "inquirer": "^6.3.1",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.13",
-    "nightwatch": "^1.2.4",
+    "nightwatch": "^1.3.5",
     "nodemon": "^1.19.0",
     "plop": "^2.3.0",
     "prettier": "1.17.0",
