@@ -45,6 +45,8 @@ Copy the `.env.schema` file to a new file called `.env` in the project root dire
 
 ## Browserstack
 
+Info regarding Nightwatch integration: https://www.browserstack.com/automate/nightwatch
+
 Configuration for browerstack is in `.env` file
 
 ```
