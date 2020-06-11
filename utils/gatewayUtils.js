@@ -4,8 +4,37 @@ const urlJoin = require('url-join');
 
 // const { urlJoin } = require('../helpers');
 
+/**
+ * EXTRACT THESE TODO!
+ */
+const QUERY_FAILED_MSG = 'query failed';
+const QUERY_OK_MSG = 'query ok';
+
+const API = urlJoin(process.env.GATEWAY_API_ROOT, 'graphql');
+
+const mapGatewayErrors = errors =>
+  errors.map(({ path = '', message = '' }) => `${path.join('/')}: ${message}`).join('\n');
+
+const checkGatewayResp = res =>
+  new Promise((resolve, reject) => {
+    if (res.status !== 200) {
+      console.error(QUERY_FAILED_MSG, res.status);
+      reject();
+    } else {
+      console.log(QUERY_OK_MSG);
+      res.json().then(data => {
+        if (data.errors && data.errors.length > 0) {
+          console.log('data', data.errors[0].extensions.exception);
+          reject(mapGatewayErrors(data.errors));
+        } else {
+          resolve(data);
+        }
+      });
+    }
+  });
+
 const runGqlQuery = async ({ query, variables, jwt }) => {
-  return fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
+  return fetch(API, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -15,7 +44,7 @@ const runGqlQuery = async ({ query, variables, jwt }) => {
       query,
       variables,
     }),
-  }).then(res => res.json());
+  }).then(res => checkGatewayResp(res));
 };
 
 const uploadFileFromString = (fileData, fileName) => {
