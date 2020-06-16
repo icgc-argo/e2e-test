@@ -91,7 +91,7 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
     'donor',
     'follow_up',
     'hormone_therapy',
-    'primary_diagnosis-good',
+    'primary_diagnosis',
     'radiation',
     'treatment',
   ];
@@ -111,11 +111,12 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
     const filePath = urljoin(folderPath, `${fileType}.tsv`);
     file = fs
       .readFileSync(filePath, 'utf8')
-      .split('DASH-CA')
+      .split('TEST-CA')
       .join(shortName);
-    console.log(file);
+
     return uploadFileFromString(file, fileType.concat('.tsv'), 'file');
   });
+
   return await runGqlUpload({
     jwt,
     query,
@@ -124,10 +125,10 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
   });
 };
 
-const registerSamples = async ({ jwt, shortName, count }) => {
+const registerSamples = async ({ jwt, shortName }) => {
   const file = fs
     .readFileSync('./goodtestdata/sample_registration.tsv', 'utf8')
-    .split('DASH-CA')
+    .split('TEST-CA')
     .join(shortName);
 
   const query = `mutation ($files:Upload!, $shortName:String!) {
