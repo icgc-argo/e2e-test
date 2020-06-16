@@ -89,15 +89,17 @@ const runGqlUpload = async ({ query, variables, jwt, files, asArray = true }) =>
     });
   }
 
-  return new Promise((resolve, reject) => {
-    fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-      body: formData,
-    }).then(res => resolve(res.json()));
-  });
+  return fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: formData,
+  }).then(res =>
+    checkGatewayResp(res, data => {
+      console.log('error', get(data, 'data.uploadClinicalSubmissions.fileErrors', false));
+    }),
+  );
 };
 
 module.exports = {

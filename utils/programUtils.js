@@ -117,7 +117,7 @@ const submitClinicalData = async ({ jwt, shortName, good }) => {
     return uploadFileFromString(file, fileType.concat('.tsv'), 'file');
   });
 
-  return await runGqlUpload({
+  return runGqlUpload({
     jwt,
     query,
     variables: { shortName },
@@ -198,7 +198,7 @@ const registerSamples = async ({ jwt, shortName }) => {
       }
     }
   }`;
-  return await runGqlUpload({
+  return runGqlUpload({
     jwt,
     query,
     variables: { shortName },
