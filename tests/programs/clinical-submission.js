@@ -21,7 +21,7 @@ module.exports = {
       done();
     });
   },
-  'Register - Empty State': browser => {
+  'Register - Empty State': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
       buildUrl(`/submission/program/${program.shortName}/sample-registration`),
     );
@@ -29,7 +29,7 @@ module.exports = {
     browser.assert.visible('#button-register-file-select');
     browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
   },
-  'Register - Upload Samples and Clear': browser => {
+  'Register - Upload Samples and Clear': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await registerSamples({
@@ -48,7 +48,7 @@ module.exports = {
     browser.click('#button-register-clear-file').pause(2500);
     browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
   },
-  'Register - Upload and Commit': browser => {
+  'Register - Upload and Commit': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await registerSamples({
@@ -72,7 +72,7 @@ module.exports = {
       .text.to.contain('new samples have been registered');
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
-  'Submission - Empty State': browser => {
+  'Submission - Empty State': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
       buildUrl(`/submission/program/${program.shortName}/clinical-submission`),
     );
@@ -82,7 +82,7 @@ module.exports = {
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
-  'Submission - Upload Good Clinical Data and Clear Submission': browser => {
+  'Submission - Upload Good Clinical Data and Clear Submission': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await submitClinicalData({
@@ -107,7 +107,7 @@ module.exports = {
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  'Submission - Upload Good Clinical Data, Validate, and Signoff': browser => {
+  'Submission - Upload Good Clinical Data, Validate, and Signoff': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await submitClinicalData({
@@ -142,7 +142,7 @@ module.exports = {
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - No Data Updates Signoff': browser => {
+  'Submission - No Data Updates Signoff': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async () => {
         await submitClinicalData({
@@ -176,7 +176,7 @@ module.exports = {
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - Full End to End': browser => {
+  'Submission - Full End to End': function(browser) {
     // Test Order:
     // Submission -
     // Upload Bad Clinical Data,
