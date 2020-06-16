@@ -11,25 +11,32 @@ const {
 
 const program = generateProgram();
 
+const p = { shortName: 'Z1801878-CA' };
+
 module.exports = {
   tags: ['programs', 'clinical-submission'],
   desiredCapabilities: {
     name: 'Registration',
   },
-  before: function(browser, done) {
+
+  before: !function(browser, done) {
     return createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program }).then(() => {
       done();
     });
   },
+
   'Register - Empty State': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
-      buildUrl(`/submission/program/${program.shortName}/sample-registration`),
+      buildUrl(`/submission/program/${p.shortName}/sample-registration`),
     );
-    browser.pause(2500);
-    browser.assert.visible('#button-register-file-select');
-    browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
+    browser
+      .waitForElementVisible('#button-register-file-select')
+      .assert.visible('#button-register-file-select')
+      .expect.element('#button-register-samples-commit')
+      .to.have.attribute('disabled');
   },
-  'Register - Upload Samples and Clear': function(browser) {
+
+  'Register - Upload Samples and Clear': !function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await registerSamples({
@@ -40,7 +47,7 @@ module.exports = {
         done();
       })
       .pause(2500)
-      .url(buildUrl(`/submission/program/${program.shortName}/sample-registration`));
+      .url(buildUrl(`/submission/program/${p.shortName}/sample-registration`));
     browser.pause(2500);
     browser.assert.visible('#button-register-clear-file');
     browser.expect.element('#button-register-samples-commit').to.not.have.attribute('disabled');
@@ -48,7 +55,8 @@ module.exports = {
     browser.click('#button-register-clear-file').pause(2500);
     browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
   },
-  'Register - Upload and Commit': function(browser) {
+
+  'Register - Upload and Commit': !function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await registerSamples({
@@ -72,7 +80,8 @@ module.exports = {
       .text.to.contain('new samples have been registered');
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
-  'Submission - Empty State': function(browser) {
+
+  'Submission - Empty State': !function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
       buildUrl(`/submission/program/${program.shortName}/clinical-submission`),
     );
@@ -82,7 +91,8 @@ module.exports = {
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
-  'Submission - Upload Good Clinical Data and Clear Submission': function(browser) {
+
+  'Submission - Upload Good Clinical Data and Clear Submission': !function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await submitClinicalData({
@@ -107,7 +117,7 @@ module.exports = {
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  'Submission - Upload Good Clinical Data, Validate, and Signoff': function(browser) {
+  'Submission - Upload Good Clinical Data, Validate, and Signoff': !function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await submitClinicalData({
@@ -142,7 +152,7 @@ module.exports = {
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - No Data Updates Signoff': function(browser) {
+  'Submission - No Data Updates Signoff': !function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async () => {
         await submitClinicalData({
@@ -176,7 +186,7 @@ module.exports = {
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - Full End to End': function(browser) {
+  'Submission - Full End to End': !function(browser) {
     // Test Order:
     // Submission -
     // Upload Bad Clinical Data,
