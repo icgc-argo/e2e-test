@@ -39,19 +39,19 @@ module.exports = {
       .setValue('#first-name', program.admins[0].firstName)
       .setValue('#last-name', program.admins[0].lastName)
       .setValue('#email', program.admins[0].email)
-      .click('#button-submit-create-program-form');
+      .click('#button-submit-create-program-form')
 
-    // Ensure success:
-    // Navigate to program list, look for success toast, ensure that our new program is in the program list
-    page
+      // Ensure success:
+      // Navigate to program list, look for success toast, ensure that our new program is in the program list
+
       .waitForElementVisible('#primary-action-create-program', 20000)
       .assert.urlEquals(buildUrl('submission/program'))
-      .useXpath()
-      .waitForElementVisible(
-        `//div[@class='MenuItemContent']//button[contains(text(), ${program.shortName})]`,
-      )
-      .useCss()
-      .end();
+      //      .pause(undefined)
+      .waitForElementVisible('.toastStackContainer');
+
+    page.expect.element('.toastStackContainer').text.to.contain('has been created');
+
+    page.end();
   },
 
   afterEach,
