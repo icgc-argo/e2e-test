@@ -9,6 +9,8 @@ const program = generateProgram();
 const programEdits = generateProgram2();
 
 module.exports = {
+  //'@disabled': true,
+
   tags: ['programs', 'edit-program'],
   desiredCapabilities: {
     name: 'Manage Programs',
@@ -17,7 +19,6 @@ module.exports = {
   before: async browser => {
     await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
   },
-
   'Edit Program': browser => {
     // As DCCAdmin, lets navigate to the create form page
     const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
@@ -28,8 +29,8 @@ module.exports = {
     browser.assert.urlEquals(
       buildUrl(`/submission/program/${program.shortName}/manage?activeTab=profile`),
     );
-    browser.pause(4000);
     browser.expect.element('#button-submit-edit-program-form').to.have.attribute('disabled');
+
     page
       .setValue('#program-name', ' EDIT')
       .perform(() => multiSelectClick(page)('#countries-multiselect', programEdits.countries))
@@ -40,27 +41,19 @@ module.exports = {
       .perform(() =>
         multiSelectClick(page)('#primary-sites-multiselect', programEdits.primarySites),
       )
-      /**
-       * Commitment level is Number, using Nightwatch setValue(string) will break it
-       *
-       * 'execute' doesn't support anon function https://github.com/nightwatchjs/nightwatch/issues/1920
-       */
-      /*  .execute(function() {
-        var el = document.querySelector('#commitment-level');
-        parseInt(el.getAttribute('value')) > 10 ? el.stepDown() : el.stepUp();
-        return true;
-      }, [])
-      */ .perform(
-        () => selectClick(page)('#membership-type', programEdits.membershipType),
-      )
+      //.setValue('#commitment-level', 199)
+      .perform(() => selectClick(page)('#membership-type', programEdits.membershipType))
       .keyClearValue('#website')
       .setValue('#website', programEdits.website)
       .setValue('#description', ' EDIT')
       .perform(() => multiSelectClick(page)('#institutions-multiselect', programEdits.institutions))
-      .perform(() =>
-        multiCheckboxClick(page)('#checkbox-group-processing-regions', programEdits.regions),
-      )
-      .click('#button-submit-edit-program-form');
+      .perform(() => {
+        // right now only 'Canada' so just toggle it
+        multiCheckboxClick(page)('#checkbox-group-processing-regions', programEdits.regions);
+        multiCheckboxClick(page)('#checkbox-group-processing-regions', programEdits.regions);
+      })
+      .click('#button-submit-edit-program-form')
+      .pause(2000);
 
     browser.expect.element('.toastStackContainer').text.to.contain('Success!');
     browser.assert.urlEquals(
