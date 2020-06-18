@@ -40,20 +40,33 @@ module.exports = {
       .perform(() =>
         multiSelectClick(page)('#primary-sites-multiselect', programEdits.primarySites),
       )
-      .setValue('#commitment-level', programEdits.commitmentDonors)
-      .perform(() => selectClick(page)('#membership-type', programEdits.membershipType))
-      //.setValue('#website', programEdits.website)
+      /**
+       * Commitment level is Number, using Nightwatch setValue(string) will break it
+       *
+       * 'execute' doesn't support anon function https://github.com/nightwatchjs/nightwatch/issues/1920
+       */
+      /*  .execute(function() {
+        var el = document.querySelector('#commitment-level');
+        parseInt(el.getAttribute('value')) > 10 ? el.stepDown() : el.stepUp();
+        return true;
+      }, [])
+      */ .perform(
+        () => selectClick(page)('#membership-type', programEdits.membershipType),
+      )
+      .keyClearValue('#website')
+      .setValue('#website', programEdits.website)
+      .setValue('#description', ' EDIT')
       .perform(() => multiSelectClick(page)('#institutions-multiselect', programEdits.institutions))
       .perform(() =>
         multiCheckboxClick(page)('#checkbox-group-processing-regions', programEdits.regions),
-      );
-    browser.pause(4000);
-    page.click('#button-submit-edit-program-form');
-    browser.pause(4000);
-    browser.expect.element('#button-submit-edit-program-form').to.have.attribute('disabled');
+      )
+      .click('#button-submit-edit-program-form');
+
     browser.expect.element('.toastStackContainer').text.to.contain('Success!');
     browser.assert.urlEquals(
       buildUrl(`/submission/program/${program.shortName}/manage?activeTab=profile`),
     );
+
+    browser.expect.element('#button-submit-edit-program-form').to.have.attribute('disabled');
   },
 };
