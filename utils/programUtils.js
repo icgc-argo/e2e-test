@@ -4,6 +4,8 @@ const fs = require('fs');
 const urljoin = require('url-join');
 const { generateRegistrationFile } = require('./clinicalData');
 
+//const REGIONS =
+
 const generateProgram = () => {
   const createTime = new Date();
   const shortName = `Z${Math.floor(createTime.getTime() / 1000) % 10000000}-CA`;
@@ -31,6 +33,7 @@ const generateProgram = () => {
   };
 };
 
+// Edited input data
 const generateProgram2 = () => {
   const createTime = new Date();
   const shortName = `Z${Math.floor(createTime.getTime() / 1000) % 10000000}-CA`;
@@ -38,11 +41,11 @@ const generateProgram2 = () => {
     name: `Auto Generated Program ${shortName} - ${createTime.toISOString()}`,
     shortName,
     description: `This program was automatically generated for test purposes at ${createTime}`,
-    commitmentDonors: 4321,
+    commitmentDonors: '4321',
     website: 'https://exampletwo.com',
     institutions: ['Toronto General Hospital'],
     countries: ['Antarctica'],
-    regions: ['Africa', 'South America'],
+    regions: ['Canada'],
     cancerTypes: ['Multiple'],
     primarySites: ['Stomach', 'Kidney'],
     membershipType: 'ASSOCIATE',
@@ -88,12 +91,12 @@ const createProgram = ({ jwt, program }) => {
 
 const submitClinicalData = async ({ jwt, shortName, good }) => {
   const fileTypes = [
+    'treatment',
     'donor',
     'follow_up',
     'hormone_therapy',
     'primary_diagnosis',
     'radiation',
-    'treatment',
   ];
 
   const query = `mutation ($shortName: String!, $files: [Upload!])
@@ -198,6 +201,7 @@ const registerSamples = async ({ jwt, shortName }) => {
       }
     }
   }`;
+
   return runGqlUpload({
     jwt,
     query,

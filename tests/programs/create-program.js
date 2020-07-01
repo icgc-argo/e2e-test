@@ -8,6 +8,8 @@ const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../uti
 const program = generateProgram();
 
 module.exports = {
+  '@disabled': true,
+
   tags: ['programs', 'create-program'],
   desiredCapabilities: {
     name: 'Manage Programs',
@@ -43,10 +45,8 @@ module.exports = {
 
       // Ensure success:
       // Navigate to program list, look for success toast, ensure that our new program is in the program list
-
       .waitForElementVisible('#primary-action-create-program', 20000)
       .assert.urlEquals(buildUrl('submission/program'))
-      //      .pause(undefined)
       .waitForElementVisible('.toastStackContainer');
 
     page.expect.element('.toastStackContainer').text.to.contain('has been created');

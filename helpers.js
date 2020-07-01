@@ -22,7 +22,7 @@ const TEST_USERS = {
     email: process.env.LOGIN_USERID_PROGRAM_ADMIN_SINGLE,
     pass: process.env.LOGIN_USERPASS_PROGRAM_ADMIN_SINGLE,
     token: process.env.TOKEN_PROGRAM_ADMIN_SINGLE,
-    startPath: '/submission/program/PACA-AU/dashboard',
+    startPath: '/user',
   },
   PROGRAM_ADMIN_MULTI: {
     email: process.env.LOGIN_USERID_PROGRAM_ADMIN_MULTI,
@@ -33,6 +33,7 @@ const TEST_USERS = {
 };
 
 const updateStatus = (browser, status, reason) => {
+  console.log('UUPDATE STATUS');
   const sessionId = browser.sessionId;
 
   const headers = new Headers();

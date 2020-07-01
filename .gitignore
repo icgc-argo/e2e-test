@@ -68,3 +68,5 @@ conf/dev.js
 .vscode
 
 .DS_Store
+
+./logs/*

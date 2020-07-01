@@ -1,6 +1,7 @@
 const fetch = require('isomorphic-fetch');
 const FormData = require('form-data');
 const urlJoin = require('url-join');
+const get = require('lodash').get;
 
 // const { urlJoin } = require('../helpers');
 
@@ -33,6 +34,23 @@ const checkGatewayResp = res =>
     }
   });
 
+const checkRespStatus = res =>
+  new Promise((resolve, reject) => {
+    if (res.status !== 200) {
+      reject('bad response');
+    } else {
+      res.json().then(d => resolve(d));
+    }
+  });
+
+const checkErrors = (data, errorPath = '') =>
+  new Promise((resolve, reject) => {
+    console.log('data', data);
+    const errors = get(data, errorPath, []);
+    console.log('errors', errors);
+    errors.length > 0 ? reject(errors) : resolve(data);
+  });
+
 const runGqlQuery = async ({ query, variables, jwt }) => {
   return fetch(API, {
     method: 'POST',
@@ -44,7 +62,7 @@ const runGqlQuery = async ({ query, variables, jwt }) => {
       query,
       variables,
     }),
-  }).then(res => checkGatewayResp(res));
+  }).then(res => checkRespStatus(res));
 };
 
 const uploadFileFromString = (fileData, fileName) => {
@@ -88,18 +106,17 @@ const runGqlUpload = async ({ query, variables, jwt, files, asArray = true }) =>
       filename: file.fileName,
     });
   }
+  console.log('files', files);
 
-  return fetch(urlJoin(process.env.GATEWAY_API_ROOT, 'graphql'), {
+  return fetch(API, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
     body: formData,
-  }).then(res =>
-    checkGatewayResp(res, data => {
-      console.log('error', get(data, 'data.uploadClinicalSubmissions.fileErrors', false));
-    }),
-  );
+  })
+    .then(res => checkRespStatus(res))
+    .then(data => checkErrors(data, 'data.uploadClinicalRegistration.errors'));
 };
 
 module.exports = {

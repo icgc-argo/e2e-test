@@ -5,16 +5,19 @@ const { afterEach, startAsUser, buildUrl, TEST_USERS } = require('../../helpers'
 const { generateProgram, createProgram } = require('../../utils/programUtils');
 const { multiSelectClick } = require('../../utils/formUtils');
 
-const program = generateProgram();
+//const program = generateProgram();
+const program = { shortName: 'Z1801878-CA' };
 
 module.exports = {
+  '@disabled': true,
+
   tags: ['programs', 'join-program'],
   desiredCapabilities: {
     name: 'Manage Programs',
   },
 
   before: async browser => {
-    await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
+    //await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
   },
   'Join a Program': browser => {
     // adds user
@@ -25,6 +28,9 @@ module.exports = {
       .setValue('[aria-label="First name"]', 'admin')
       .setValue('[aria-label="Last name"]', 'single')
       .setValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
+      .click('select[aria-label="Select role"] + div[role="button"')
+      .waitForElementVisible('ol[role="listbox"] li[data-value="ADMIN"]')
+      .click('ol[role="listbox"] li[data-value="ADMIN"]')
       .click('#modal-add-users');
 
     // tests if email was sent to mailhog
@@ -32,10 +38,11 @@ module.exports = {
       .pause(10000) // allows time for email to reach mailhog
       .url(process.env.MAILHOG_ROOT)
       .click('xpath', `//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
+
       .frame('preview-html', () => {
         browser.getAttribute('xpath', "//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', r => {
           const inviteId = r.value.match(/[^\/]*$/)[0];
-          console.log(inviteId);
+
           browser
             .url(buildUrl(`/submission/program/join/login/${inviteId}`))
             .useXpath()
@@ -55,6 +62,7 @@ module.exports = {
             .click('#join-now')
             .pause(10000)
             .useXpath()
+            .pause(undefined)
             .waitForElementVisible(
               `//*[contains(text(), 'Welcome to ${program.shortName}!')]`,
               10000,

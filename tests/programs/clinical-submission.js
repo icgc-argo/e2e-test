@@ -9,11 +9,11 @@ const {
   submitClinicalData,
 } = require('../../utils/programUtils');
 
-const program = generateProgram();
-
-const p = { shortName: 'Z1801878-CA' };
+//const program = generateProgram();
+const program = { shortName: 'Z1801878-CA' };
 
 module.exports = {
+  '@disabled': true,
   tags: ['programs', 'clinical-submission'],
   desiredCapabilities: {
     name: 'Registration',
@@ -27,72 +27,72 @@ module.exports = {
 
   'Register - Empty State': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
-      buildUrl(`/submission/program/${p.shortName}/sample-registration`),
+      buildUrl(`/submission/program/${program.shortName}/sample-registration`),
     );
+
     browser
-      .waitForElementVisible('#button-register-file-select')
+      .waitForElementVisible('#button-register-file-select', 2000)
       .assert.visible('#button-register-file-select')
       .expect.element('#button-register-samples-commit')
       .to.have.attribute('disabled');
   },
 
-  'Register - Upload Samples and Clear': !function(browser) {
+  'Register - Upload Samples and Clear': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
-          count: 5,
         });
         done();
       })
-      .pause(2500)
-      .url(buildUrl(`/submission/program/${p.shortName}/sample-registration`));
-    browser.pause(2500);
-    browser.assert.visible('#button-register-clear-file');
-    browser.expect.element('#button-register-samples-commit').to.not.have.attribute('disabled');
+      .url(buildUrl(`/submission/program/${program.shortName}/sample-registration`));
 
-    browser.click('#button-register-clear-file').pause(2500);
-    browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
+    browser.waitForElementVisible('#button-register-clear-file');
+    browser.expect.element('#button-register-samples-commit').to.not.have.attribute('disabled');
+    browser.assert
+      .visible('#button-register-clear-file')
+      .click('#button-register-clear-file')
+      .assert.visible('#button-register-samples-commit:disabled');
   },
 
-  'Register - Upload and Commit': !function(browser) {
+  'Register - Upload and Commit': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
-          count: 5,
         });
         done();
       })
-      .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/sample-registration`));
-    browser.pause(2500);
+
     browser
+      .waitForElementVisible('#button-register-samples-commit:enabled', 2000)
       .click('#button-register-samples-commit')
-      .pause(2500)
       .waitForElementVisible('#modal-confirm-register')
-      .click('#modal-confirm-register')
-      .pause(4000);
+      .click('#modal-confirm-register');
+
     browser.expect
       .element('.toastStackContainer')
-      .text.to.contain('new samples have been registered');
+      // title: `${num} new registered ${pluralize('sample', num)}`,
+      .text.to.contain('new registered');
+
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - Empty State': !function(browser) {
+  'Submission - Empty State': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
       buildUrl(`/submission/program/${program.shortName}/clinical-submission`),
     );
-    browser.pause(2500);
+
     browser.assert.visible('#button-submission-file-select');
     browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  'Submission - Upload Good Clinical Data and Clear Submission': !function(browser) {
+  'Submission - Upload Good Clinical Data and Clear Submission': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await submitClinicalData({
@@ -104,7 +104,12 @@ module.exports = {
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
-    browser.pause(2500);
+
+    browser
+      .waitForElementVisible('#button-validate-submission')
+      .waitForElementVisible('#button-submission-sign-off')
+      .waitForElementVisible('#button-clear-submission');
+
     browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
@@ -117,7 +122,10 @@ module.exports = {
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  'Submission - Upload Good Clinical Data, Validate, and Signoff': !function(browser) {
+  /**
+   * Note: Samples have to be registered in previous steps already
+   */
+  'Submission - Upload Good Clinical Data, Validate, and Signoff': function(browser) {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .perform(async function(done) {
         await submitClinicalData({
@@ -129,12 +137,12 @@ module.exports = {
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
-    browser.pause(2500);
+
     browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');
 
-    browser.click('#button-validate-submission').pause(2500);
+    browser.click('#button-validate-submission').pause(undefined);
 
     browser.expect.element('#button-validate-submission').to.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.not.have.attribute('disabled');
@@ -164,6 +172,7 @@ module.exports = {
       })
       .pause(2500)
       .url(buildUrl(`/submission/program/${program.shortName}/clinical-submission`));
+
     browser.expect.element('#button-validate-submission').to.not.have.attribute('disabled');
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.not.have.attribute('disabled');

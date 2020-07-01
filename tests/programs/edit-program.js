@@ -19,6 +19,7 @@ module.exports = {
   before: async browser => {
     await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
   },
+
   'Edit Program': browser => {
     // As DCCAdmin, lets navigate to the create form page
     const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
