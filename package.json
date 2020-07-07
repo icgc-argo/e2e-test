@@ -9,7 +9,11 @@
     "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js",
     "browserstack-all": "./scripts/local.runner.js -c ./conf/browserstack-chrome.js; ./scripts/local.runner.js -c ./conf/browserstack-firefox.js",
     "deploy": "git push && git push --tags",
-    "flow": "flow"
+    "flow": "flow",
+    "clean": "rm -rf ./build",
+    "type-check": "tsc -p ./tsconfig.json",
+    "build": "npm run clean && npm run type-check",
+    "postBuild": ""
   },
   "bin": {
     "geckodriver": "./node_modules/geckodriver/bin/geckodriver",
@@ -57,7 +61,9 @@
   },
   "devDependencies": {
     "chromedriver": "^80.0.1",
-    "geckodriver": "^1.19.1"
+    "geckodriver": "^1.19.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.6"
   },
   "prettier": {
     "printWidth": 100,
