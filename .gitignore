@@ -62,9 +62,11 @@ test_reports
 /test_reports
 browserstack.err
 chromedriver.log
-conf/dev.js
+src/conf/dev.js
 
 # VSCode
 .vscode
 
 .DS_Store
+
+build
