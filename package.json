@@ -12,7 +12,7 @@
     "clean": "rm -rf ./build",
     "type-check": "tsc -p ./tsconfig.json",
     "build": "npm run clean && npm run type-check",
-    "postBuild": ""
+    "postbuild": "node ./scripts/copy-test-data.js"
   },
   "bin": {
     "geckodriver": "./node_modules/geckodriver/bin/geckodriver",
