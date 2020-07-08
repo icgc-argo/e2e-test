@@ -9,9 +9,10 @@
     "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js",
     "browserstack-all": "./scripts/local.runner.js -c ./conf/browserstack-chrome.js; ./scripts/local.runner.js -c ./conf/browserstack-firefox.js",
     "deploy": "git push && git push --tags",
-    "clean": "rm -rf ./build",
+    "clean": "rimraf ./build",
     "type-check": "tsc -p ./tsconfig.json",
-    "build": "npm run clean && npm run type-check",
+    "prebuild": "npm run clean",
+    "build": "npm run type-check",
     "postbuild": "node ./scripts/copy-test-data.js"
   },
   "bin": {
@@ -36,6 +37,7 @@
   "devDependencies": {
     "chromedriver": "^80.0.1",
     "geckodriver": "^1.19.1",
+    "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.6"
   },
