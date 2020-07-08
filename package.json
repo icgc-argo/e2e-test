@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "scripts": {
     "interactive": "./scripts/interactive.js",
-    "nightwatch": "nightwatch -c ./conf/dev.js",
+    "nightwatch": "nightwatch -c ./build/conf/dev.js",
     "nightwatch-chrome": "nightwatch -c ./conf/dev.js --env CHROME_LATEST",
     "nightwatch-ff": "nightwatch -c ./conf/dev.js --env FIREFOX_LATEST",
     "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js",

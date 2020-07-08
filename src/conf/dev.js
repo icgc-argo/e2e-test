@@ -8,7 +8,7 @@ const config = {
   src_folders: ['../tests/programs'],
   output_folder: './test_reports',
 
-  custom_commands_path: './commands',
+  //  custom_commands_path: './commands',
 
   webdriver: {
     start_process: true,
