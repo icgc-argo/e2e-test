@@ -13,7 +13,8 @@
     "type-check": "tsc -p ./tsconfig.json",
     "prebuild": "npm run clean",
     "build": "npm run type-check",
-    "postbuild": "node ./scripts/copy-test-data.js"
+    "postbuild": "node ./scripts/copy-test-data.js",
+    "dev": "tsc -p ./tsconfig.json --watch"
   },
   "bin": {
     "geckodriver": "./node_modules/geckodriver/bin/geckodriver",
