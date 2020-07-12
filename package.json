@@ -2,14 +2,14 @@
   "name": "argo-e2e",
   "version": "0.0.3",
   "scripts": {
-    "nightwatch": "nightwatch -c ./build/conf/dev.js",
-    "browserstack": "./scripts/local.runner.js -c ./conf/browserstack-default.js",
+    "nightwatch": "npm run build && nightwatch -c ./build/conf/dev.js",
+    "browserstack": "npm run build && ./build/scripts/local.runner.js -c ./build/conf/browserstack-default.js",
     "deploy": "git push && git push --tags",
     "clean": "rimraf ./build",
     "type-check": "tsc -p ./tsconfig.json",
     "prebuild": "npm run clean",
     "build": "npm run type-check",
-    "postbuild": "node ./scripts/copy-test-data.js",
+    "postbuild": "ts-node ./scripts/copy-test-data.ts",
     "dev": "tsc -p ./tsconfig.json --watch"
   },
   "bin": {
