@@ -9,7 +9,7 @@
     "type-check": "tsc -p ./tsconfig.json",
     "prebuild": "npm run clean",
     "build": "npm run type-check",
-    "postbuild": "ts-node ./scripts/copy-test-data.ts",
+    "postbuild": "ts-node ./scripts/copy-test-data.ts && ts-node ./scripts/make-test-runner-exec.ts",
     "dev": "tsc -p ./tsconfig.json --watch"
   },
   "bin": {
