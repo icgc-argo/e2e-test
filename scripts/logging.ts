@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 
 const info = chalk.magenta.bold;
 const success = chalk.green.bold;
@@ -8,4 +8,4 @@ const log = {
   success: (msg: string) => console.log(success(msg)),
 };
 
-module.exports = log;
+export default log;

@@ -7,7 +7,8 @@
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "isolatedModules": true
   },
   "include": ["./src/**/*"]
 }

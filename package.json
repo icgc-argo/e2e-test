@@ -9,7 +9,7 @@
     "type-check": "tsc -p ./tsconfig.json",
     "prebuild": "npm run clean",
     "build": "npm run type-check",
-    "postbuild": "ts-node ./scripts/copy-test-data.ts && ts-node ./scripts/make-test-runner-exec.ts",
+    "postbuild": "ts-node ./scripts/postbuild.ts",
     "dev": "tsc -p ./tsconfig.json --watch"
   },
   "bin": {
@@ -17,6 +17,7 @@
     "chromedriver": "./node_modules/chromedriver/bin/chromedriver"
   },
   "dependencies": {
+    "@types/shelljs": "^0.8.8",
     "browserstack-local": "^1.3.7",
     "chalk": "^2.4.2",
     "dotenv": "^7.0.0",
