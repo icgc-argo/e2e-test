@@ -1,5 +1,7 @@
 {
   "hooks": {
-      "pre-commit": "pretty-quick --staged && npm run flow"
+      "pre-commit": "pretty-quick --staged",
+      "pre-push": "npm run type-check"
+
   }
 }
