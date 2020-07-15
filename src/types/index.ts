@@ -1,3 +1,11 @@
+import { NightwatchTestHook, NightwatchTestFunctions } from 'nightwatch';
+
+// Tests
+export interface BaseTest extends NightwatchTestFunctions {
+  '@disabled': boolean;
+  after: NightwatchTestHook;
+}
+
 // Users
 export type User = { email: string; pass: string; token: string; startPath: string };
 
@@ -34,7 +42,6 @@ export enum TestStatus {
 }
 
 // "nightwatch": "^1.3.6",
-
 export type Done = (err?: any) => void;
 
 export type Results = {
