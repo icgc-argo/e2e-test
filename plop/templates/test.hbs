@@ -6,6 +6,10 @@ import { NightwatchBrowser, NightwatchCallbackResult } from 'nightwatch';
 const {{properCase name}}Test: BaseTest = {
 '@disabled': false,
 tags: [],
+desiredCapabilities: {
+name: {{titleCase name}},
+},
+
 
 'step 1':(browser: NightwatchBrowser) => {},
 
