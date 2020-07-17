@@ -10,6 +10,7 @@ module.exports = function(plop: NodePlopAPI) {
         message: 'Please enter test name...',
       },
       { type: 'input', name: 'group', message: 'Please enter test group name...' },
+      { type: 'input', name: 'developer', message: 'Please enter your name (test developer)...' },
     ],
     actions: [
       {
