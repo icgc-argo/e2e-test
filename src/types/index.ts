@@ -3,6 +3,7 @@ import { NightwatchTestHook, NightwatchTestFunctions } from 'nightwatch';
 // Tests
 export interface BaseTest extends NightwatchTestFunctions {
   '@disabled': boolean;
+  developer: string;
   after: NightwatchTestHook;
 }
 
