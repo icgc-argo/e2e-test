@@ -1,0 +1,22 @@
+import { submitResults } from '../../helpers';
+import { BaseTest } from '../../types';
+import { NightwatchBrowser, NightwatchCallbackResult } from 'nightwatch';
+
+
+const {{properCase name}}Test: BaseTest = {
+'@disabled': false,
+tags: [],
+developer: {{titleCase developer}},
+desiredCapabilities: {
+name: {{titleCase name}}::{{titleCase developer}},
+},
+
+
+'step 1':(browser: NightwatchBrowser) => {},
+
+after: (browser, done) => submitResults(browser, done),
+
+}
+
+
+export = {{properCase name}}Test;
