@@ -56,7 +56,11 @@ const ClinicalSubmissionTest: BaseTest = {
 
   'Register - Upload and Commit': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+<<<<<<< HEAD:src/tests/programs/clinical-submission.ts
       .perform(async (done: Done) => {
+=======
+      .perform(async function(done: Done) {
+>>>>>>> update tests to TS:src/tests/programs/clinical-submission.ts
         await registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -91,7 +95,11 @@ const ClinicalSubmissionTest: BaseTest = {
 
   'Submission - Upload Good Clinical Data and Clear Submission': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+<<<<<<< HEAD:src/tests/programs/clinical-submission.ts
       .perform(async (done: Done) => {
+=======
+      .perform(async function(done: Done) {
+>>>>>>> update tests to TS:src/tests/programs/clinical-submission.ts
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -116,7 +124,11 @@ const ClinicalSubmissionTest: BaseTest = {
 
   'Submission - Upload Good Clinical Data, Validate, and Signoff': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
+<<<<<<< HEAD:src/tests/programs/clinical-submission.ts
       .perform(async (done: Done) => {
+=======
+      .perform(async function(done: Done) {
+>>>>>>> update tests to TS:src/tests/programs/clinical-submission.ts
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
