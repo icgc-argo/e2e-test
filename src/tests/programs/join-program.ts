@@ -17,7 +17,8 @@ const getInviteId = (result: NightwatchCallbackResult<string | null>): string =>
 };
 
 const JoinProgramTest: BaseTest = {
-  '@disabled': false,
+  '@disabled': true,
+  developer: 'Ciaran Schutte',
   tags: ['programs', 'join-program'],
   desiredCapabilities: {
     name: 'Manage Programs',

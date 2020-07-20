@@ -1,35 +1,32 @@
-const assert = require('assert');
+import { BaseTest, Done } from '../../types';
 
-const {
-  afterEach,
-  startAsUser,
-  updateStatus,
-  buildUrl,
-  loginAsUser,
-  TEST_USERS,
-} = require('../../helpers');
+import { startAsUser, buildUrl, TEST_USERS, submitResults } from '../../helpers';
 
-const {
+import {
   generateProgram,
   createProgram,
   registerSamples,
   submitClinicalData,
-} = require('../../utils/programUtils');
-const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
+} from '../../utils/programUtils';
+import { NightwatchBrowser } from 'nightwatch';
 
 const program = generateProgram();
 
-module.exports = {
+const ClinicalSubmissionTest: BaseTest = {
+  '@disabled': true,
+  developer: 'Ciaran Schutte',
   tags: ['programs', 'clinical-submission'],
   desiredCapabilities: {
     name: 'Registration',
   },
-  before: function(browser, done) {
+
+  before: async (browser: NightwatchBrowser, done) => {
     return createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program }).then(() => {
       done();
     });
   },
-  'Register - Empty State': browser => {
+
+  'Register - Empty State': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
       buildUrl(`/submission/program/${program.shortName}/sample-registration`),
     );
@@ -37,13 +34,13 @@ module.exports = {
     browser.assert.visible('#button-register-file-select');
     browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
   },
-  'Register - Upload Samples and Clear': browser => {
+
+  'Register - Upload Samples and Clear': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done) {
+      .perform(async (done: Done) => {
         await registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
-          count: 5,
         });
         done();
       })
@@ -56,13 +53,13 @@ module.exports = {
     browser.click('#button-register-clear-file').pause(2500);
     browser.expect.element('#button-register-samples-commit').to.have.attribute('disabled');
   },
-  'Register - Upload and Commit': browser => {
+
+  'Register - Upload and Commit': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done) {
+      .perform(async function(done: Done) {
         await registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
-          count: 5,
         });
         done();
       })
@@ -80,7 +77,8 @@ module.exports = {
       .text.to.contain('new samples have been registered');
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
-  'Submission - Empty State': browser => {
+
+  'Submission - Empty State': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(
       buildUrl(`/submission/program/${program.shortName}/clinical-submission`),
     );
@@ -90,9 +88,10 @@ module.exports = {
     browser.expect.element('#button-submission-sign-off').to.have.attribute('disabled');
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
-  'Submission - Upload Good Clinical Data and Clear Submission': browser => {
+
+  'Submission - Upload Good Clinical Data and Clear Submission': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done) {
+      .perform(async function(done: Done) {
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -115,9 +114,9 @@ module.exports = {
     browser.expect.element('#button-clear-submission').to.have.attribute('disabled');
   },
 
-  'Submission - Upload Good Clinical Data, Validate, and Signoff': browser => {
+  'Submission - Upload Good Clinical Data, Validate, and Signoff': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done) {
+      .perform(async function(done: Done) {
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -150,13 +149,13 @@ module.exports = {
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - No Data Updates Signoff': browser => {
+  'Submission - No Data Updates Signoff': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async () => {
+      .perform(async (done: Done) => {
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
-          good: 'true',
+          good: true,
         });
         done();
       })
@@ -184,7 +183,7 @@ module.exports = {
     browser.assert.urlEquals(buildUrl(`submission/program/${program.shortName}/dashboard`));
   },
 
-  'Submission - Full End to End': browser => {
+  'Submission - Full End to End': (browser: NightwatchBrowser) => {
     // Test Order:
     // Submission -
     // Upload Bad Clinical Data,
@@ -199,7 +198,7 @@ module.exports = {
     // Approve
 
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done) {
+      .perform(async (done: Done) => {
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -285,4 +284,8 @@ module.exports = {
       .text.to.contain('Clinical Data is successfully approved');
     browser.assert.urlEquals(buildUrl('submission/dcc/dashboard'));
   },
+
+  after: (browser, done) => submitResults(browser, done),
 };
+
+export = ClinicalSubmissionTest;
