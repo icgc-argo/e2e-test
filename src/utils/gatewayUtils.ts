@@ -48,7 +48,7 @@ const runGqlUpload = async ({
   files: Array<{ fileData: string; fileName: string }>;
   asArray?: boolean;
 }) => {
-  const formData = new FormData();
+  const formData: FormData = new FormData();
 
   const updatedVariables: { shortName: string; files: null | Array<string | null> } = {
     ...variables,

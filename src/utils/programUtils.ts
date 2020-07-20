@@ -64,6 +64,9 @@ const createProgram = ({ jwt, program }: { jwt: string; program: Program }) => {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> update utils to TS
 const submitClinicalData = async ({
   jwt,
   shortName,
@@ -195,6 +198,9 @@ const registerSamples = async ({ jwt, shortName }: { jwt: string; shortName: str
 };
 
 export { generateProgram, createProgram, registerSamples, submitClinicalData };
+<<<<<<< HEAD
 =======
 export { generateProgram, createProgram };
 >>>>>>> update and type helper functions
+=======
+>>>>>>> update utils to TS
