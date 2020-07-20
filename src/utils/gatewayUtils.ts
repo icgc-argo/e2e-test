@@ -48,7 +48,7 @@ const runGqlUpload = async ({
   files: Array<{ fileData: string; fileName: string }>;
   asArray?: boolean;
 }) => {
-  const formData: FormData = new FormData();
+  const formData = new FormData();
 
   const updatedVariables: { shortName: string; files: null | Array<string | null> } = {
     ...variables,
@@ -91,6 +91,8 @@ const runGqlUpload = async ({
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
+      // form-data type is clashing with node form-data, some methods aren't defined
+      //@ts-ignore
       body: formData,
     }).then(res => resolve(res.json()));
   });
