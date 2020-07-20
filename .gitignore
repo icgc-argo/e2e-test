@@ -70,3 +70,5 @@ src/conf/dev.js
 .DS_Store
 
 build
+
+.~lock*
