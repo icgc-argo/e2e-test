@@ -56,7 +56,7 @@ const ClinicalSubmissionTest: BaseTest = {
 
   'Register - Upload and Commit': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done: Done) {
+      .perform(async (done: Done) => {
         await registerSamples({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -91,7 +91,7 @@ const ClinicalSubmissionTest: BaseTest = {
 
   'Submission - Upload Good Clinical Data and Clear Submission': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done: Done) {
+      .perform(async (done: Done) => {
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,
@@ -116,7 +116,7 @@ const ClinicalSubmissionTest: BaseTest = {
 
   'Submission - Upload Good Clinical Data, Validate, and Signoff': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
-      .perform(async function(done: Done) {
+      .perform(async (done: Done) => {
         await submitClinicalData({
           jwt: TEST_USERS.DCC_ADMIN.token,
           shortName: program.shortName,

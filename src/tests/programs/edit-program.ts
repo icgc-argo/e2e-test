@@ -44,8 +44,8 @@ const EditProgramTest: BaseTest = {
     page
       .setValue('#program-name', ' EDIT')
       .perform(() => multiSelectClick(page)('#countries-multiselect', programEdits.countries))
-      .getAttribute('#button-submit-edit-program-form', 'disabled', function(result) {
-        this.assert.equal(result.value, null);
+      .getAttribute('#button-submit-edit-program-form', 'disabled', result => {
+        browser.assert.equal(result.value, null);
       })
       .perform(() => multiSelectClick(page)('#cancer-types-multiselect', programEdits.cancerTypes))
       .perform(() =>
