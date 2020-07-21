@@ -6,7 +6,7 @@ import { submitResults } from '../helpers';
  * Test to make sure Browserstack local testing is working
  */
 const IsWorkingTest: BaseTest = {
-  '@disabled': true,
+  '@disabled': false,
   developer: 'Ciaran Schutte',
   'BrowserStack Local Testing': (browser: NightwatchBrowser) => {
     browser
