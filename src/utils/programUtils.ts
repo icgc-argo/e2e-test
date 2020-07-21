@@ -4,7 +4,7 @@ import { runGqlQuery, runGqlUpload, uploadFileFromString } from './gatewayUtils'
 import fs from 'fs';
 import urljoin from 'url-join';
 
-const generateProgram = (program?: Partial<Program>): Program => {
+const generateProgram = (program: Partial<Program> = {}): Program => {
   const createTime = new Date();
   const shortName = `Z${Math.floor(createTime.getTime() / 1000) % 10000000}-CA`;
 
