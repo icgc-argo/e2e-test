@@ -85,17 +85,15 @@ const runGqlUpload = async ({
     });
   }
 
-  return new Promise((resolve, reject) => {
-    fetch(urlJoin(GATEWAY_API_ROOT, 'graphql'), {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-      // form-data type is clashing with node form-data, some methods aren't defined
-      //@ts-ignore
-      body: formData,
-    }).then(res => resolve(res.json()));
-  });
+  return fetch(urlJoin(GATEWAY_API_ROOT, 'graphql'), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+    // form-data type is clashing with node form-data, some methods aren't defined
+    //@ts-ignore
+    body: formData,
+  }).then(res => res.json());
 };
 
 export { runGqlQuery, runGqlUpload, uploadFileFromString };
