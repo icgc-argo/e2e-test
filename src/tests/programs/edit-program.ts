@@ -1,35 +1,35 @@
-const assert = require('assert');
-const urlJoin = require('url-join');
-const { orderBy } = require('lodash');
+import { submitResults, buildUrl, TEST_USERS, startAsUser } from '../../helpers';
 
-const {
-  afterEach,
-  buildUrl,
-  visitPath,
-  TEST_USERS,
-  updateStatus,
-  performWithValues,
-  startAsUser,
-} = require('../../helpers');
+import { generateProgram, createProgram } from '../../utils/programUtils';
+import { multiSelectClick, selectClick, multiCheckboxClick } from '../../utils/formUtils';
+import { BaseTest, Program } from '../../types';
+import { NightwatchBrowser } from 'nightwatch';
 
-const { generateProgram, generateProgram2, createProgram } = require('../../utils/programUtils');
-const { runGqlQuery } = require('../../utils/gatewayUtils');
-const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
+const program: Program = generateProgram();
+const programEdits: Program = generateProgram({
+  commitmentDonors: 4321,
+  website: 'https://exampletwo.com',
+  institutions: ['Toronto General Hospital'],
+  countries: ['Antarctica'],
+  regions: ['Africa', 'South America'],
+  cancerTypes: ['Multiple'],
+  primarySites: ['Stomach', 'Kidney'],
+  membershipType: 'ASSOCIATE',
+});
 
-const program = generateProgram();
-const programEdits = generateProgram2();
-
-module.exports = {
+const EditProgramTest: BaseTest = {
+  '@disabled': false,
+  developer: 'Ciaran Schutte',
   tags: ['programs', 'edit-program'],
   desiredCapabilities: {
     name: 'Manage Programs',
   },
 
-  before: async browser => {
+  before: async (browser: NightwatchBrowser) => {
     await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
   },
 
-  'Edit Program': browser => {
+  'Edit Program': (browser: NightwatchBrowser) => {
     // As DCCAdmin, lets navigate to the create form page
     const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .pause(2000)
@@ -44,14 +44,14 @@ module.exports = {
     page
       .setValue('#program-name', ' EDIT')
       .perform(() => multiSelectClick(page)('#countries-multiselect', programEdits.countries))
-      .getAttribute('#button-submit-edit-program-form', 'disabled', function(result) {
-        this.assert.equal(result.value, null);
+      .getAttribute('#button-submit-edit-program-form', 'disabled', result => {
+        browser.assert.equal(result.value, null);
       })
       .perform(() => multiSelectClick(page)('#cancer-types-multiselect', programEdits.cancerTypes))
       .perform(() =>
         multiSelectClick(page)('#primary-sites-multiselect', programEdits.primarySites),
       )
-      .setValue('#commitment-level', programEdits.commitmentDonors)
+      .setValue('#commitment-level', programEdits.commitmentDonors.toString())
       .perform(() => selectClick(page)('#membership-type', programEdits.membershipType))
       //.setValue('#website', programEdits.website)
       .perform(() => multiSelectClick(page)('#institutions-multiselect', programEdits.institutions))
@@ -67,4 +67,8 @@ module.exports = {
       buildUrl(`/submission/program/${program.shortName}/manage?activeTab=profile`),
     );
   },
+
+  after: (browser, done) => submitResults(browser, done),
 };
+
+export = EditProgramTest;

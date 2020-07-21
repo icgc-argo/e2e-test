@@ -111,4 +111,41 @@ const TEST_USERS: { [key: string]: User } = {
   },
 };
 
-export { submitResults, startAsUser, loginAsUser, TEST_USERS };
+/*
+ * Convenience function for executing logic on the response from elementValues.
+ * Callback takes one argument which is the array of element content. Example:
+ * callback = items=>{assert(isTrue(),'was it true')}
+ */
+const performWithValues = (browser: NightwatchBrowser) => (
+  selector: string,
+  callback: (values: Array<string>) => void,
+) => {
+  let values: Array<string> = [];
+  browser
+    .perform(() => {
+      values = elementValues(browser)(selector);
+    })
+    .perform(() => {
+      callback(values);
+    });
+};
+
+/*
+ * Convenience function for getting the content of every element that matches a CSS selector
+ * Returns that content as an array
+ */
+const elementValues = (browser: NightwatchBrowser) => (selector: string) => {
+  const output: Array<string> = [];
+  browser.elements('css selector', selector, elems => {
+    const value = elems.value as Array<{ ELEMENT: string }>;
+    value.forEach(elem => {
+      browser.elementIdText(elem.ELEMENT, elemContent => {
+        const content: string = elemContent.value as string;
+        output.push(content);
+      });
+    });
+  });
+  return output;
+};
+
+export { visitPath, submitResults, startAsUser, loginAsUser, performWithValues, TEST_USERS };

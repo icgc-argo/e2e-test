@@ -1,30 +1,23 @@
-const assert = require('assert');
-const urlJoin = require('url-join');
-const { orderBy } = require('lodash');
+import { BaseTest } from '../../types';
+import { NightwatchBrowser } from 'nightwatch';
+import { submitResults } from '../../helpers';
 
-const {
-  afterEach,
-  buildUrl,
-  visitPath,
-  TEST_USERS,
-  updateStatus,
-  performWithValues,
-  startAsUser,
-} = require('../../helpers');
+import { buildUrl, TEST_USERS, startAsUser } from '../../helpers';
 
-const { generateProgram } = require('../../utils/programUtils');
-const { runGqlQuery } = require('../../utils/gatewayUtils');
-const { multiSelectClick, selectClick, multiCheckboxClick } = require('../../utils/formUtils');
+import { generateProgram } from '../../utils/programUtils';
+import { multiSelectClick, selectClick, multiCheckboxClick } from '../../utils/formUtils';
 
 const program = generateProgram();
 
-module.exports = {
+const CreateProgramTest: BaseTest = {
+  '@disabled': false,
+  developer: 'Ciaran Schutte',
   tags: ['programs', 'create-program'],
   desiredCapabilities: {
     name: 'Manage Programs',
   },
 
-  'Create New Program': browser => {
+  'Create New Program': (browser: NightwatchBrowser) => {
     // As DCCAdmin, lets navigate to the create form page
     const page = startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .waitForElementVisible('#primary-action-create-program')
@@ -39,7 +32,7 @@ module.exports = {
       .perform(() => multiSelectClick(page)('#countries-multiselect', program.countries))
       .perform(() => multiSelectClick(page)('#cancer-types-multiselect', program.cancerTypes))
       .perform(() => multiSelectClick(page)('#primary-sites-multiselect', program.primarySites))
-      .setValue('#commitment-level', program.commitmentDonors)
+      .setValue('#commitment-level', program.commitmentDonors.toString())
       .perform(() => selectClick(page)('#membership-type', program.membershipType))
       .setValue('#website', program.website)
       .setValue('#description', program.description)
@@ -65,5 +58,7 @@ module.exports = {
       .end();
   },
 
-  afterEach,
+  after: (browser, done) => submitResults(browser, done),
 };
+
+export = CreateProgramTest;

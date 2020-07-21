@@ -1,10 +1,10 @@
 // Helper for selecting at random from enums
-const chooseOne = array => {
+const chooseOne = (array: Array<string | number>) => {
   const choice = Math.floor(Math.random() * array.length);
   return array[choice];
 };
 
-const registrationRecord = (shortName, count) => {
+const registrationRecord = (shortName: string, count: number) => {
   const donorId = `do-${shortName}-${count}`;
   const gender = Math.random() > 0.5 ? 'Male' : 'Female';
   const specimenId = `sp-${shortName}-${count}`;
@@ -59,7 +59,15 @@ const registrationRecord = (shortName, count) => {
   return `${shortName}\t${donorId}\t${gender}\t${specimenId}\t${source}\t${normalDesignation}\t${specimenType}\t${sampleId}\t${sampleType}`;
 };
 
-const generateRegistrationFile = ({ shortName, count, submitterIdStart = 0 }) => {
+const generateRegistrationFile = ({
+  shortName,
+  count,
+  submitterIdStart = 0,
+}: {
+  shortName: string;
+  count: number;
+  submitterIdStart?: number;
+}) => {
   const headers = `program_id\tsubmitter_donor_id\tgender\tsubmitter_specimen_id\tspecimen_tissue_source\ttumour_normal_designation\tspecimen_type\tsubmitter_sample_id\tsample_type\n`;
   const records = [];
   for (let i = 0; i < count; i++) {
@@ -70,7 +78,7 @@ const generateRegistrationFile = ({ shortName, count, submitterIdStart = 0 }) =>
   return data;
 };
 
-const donorRecord = (shortName, count) => {
+const donorRecord = (shortName: string, count: number) => {
   const donorId = `do-${shortName}-${count}`;
   const deceased = Math.random() > 0.5 ? true : false;
   const vitalStatus = deceased ? 'Deceased' : chooseOne(['Alive', 'Not reported', 'Unknown']);
@@ -81,7 +89,15 @@ const donorRecord = (shortName, count) => {
   return `${donorId}\t${vitalStatus}\t${causeOfDeath}\t${survivalTime}`;
 };
 
-const generateDonorFile = ({ shortName, count, submitterIdStart = 0 }) => {
+const generateDonorFile = ({
+  shortName,
+  count,
+  submitterIdStart = 0,
+}: {
+  shortName: string;
+  count: number;
+  submitterIdStart?: number;
+}) => {
   const headers = `submitter_donor_id\tvital_status\tcause_of_death\tsurvival_time\n`;
   const records = [];
   for (let i = 0; i < count; i++) {
@@ -92,7 +108,12 @@ const generateDonorFile = ({ shortName, count, submitterIdStart = 0 }) => {
   return data;
 };
 
-const specimenRecord = (shortName, count, donorId, maxInterval = 600) => {
+const specimenRecord = (
+  shortName: string,
+  count: number,
+  donorId: string,
+  maxInterval: number = 600,
+) => {
   const specimenId = `sp-${shortName}-${count}`;
   const acquisitionInterval = Math.floor(Math.random() * maxInterval * 0.9) + 1;
   const location = chooseOne([
@@ -444,7 +465,15 @@ const specimenRecord = (shortName, count, donorId, maxInterval = 600) => {
   ].join('\t');
 };
 
-const generateSpecimenFile = ({ shortName, count, submitterIdStart = 0 }) => {
+const generateSpecimenFile = ({
+  shortName,
+  count,
+  submitterIdStart = 0,
+}: {
+  shortName: string;
+  count: number;
+  submitterIdStart?: number;
+}) => {
   const headers = `submitter_donor_id\tsubmitter_specimen_id\tacquisition_interval\tanatomic_location_of_specimen_collection\tcentral_pathology_confirmed\ttumour_histological_type\ttumour_grading_system\ttumour_grading_system\ttumour_grade\ttumour_staging_system\tpathological_stage_group\tpercent_tumour_cells\tpercent_proliferating_cells\tpercent_inflammatory_tissue\tpercent_stromal_cells\tpercent_necrosis\n`;
   const records = [];
   for (let i = 0; i < count; i++) {

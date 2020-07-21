@@ -1,28 +1,12 @@
-const assert = require('assert');
+import { BaseTest } from '../types';
 
-const {
-  afterEach,
-  startAsUser,
-  updateStatus,
-  buildUrl,
-  loginAsUser,
-  TEST_USERS,
-} = require('../helpers');
+import { startAsUser, buildUrl, TEST_USERS, submitResults } from '../helpers';
+import { NightwatchBrowser } from 'nightwatch';
 
-const {
-  generateProgram,
-  createProgram,
-  registerSamples,
-  submitClinicalData,
-} = require('../utils/programUtils');
-const { multiSelectClick, selectClick, multiCheckboxClick } = require('../utils/formUtils');
-
-module.exports = {
-  //tags: ['programs', 'clinical-submission'],
-  // desiredCapabilities: {
-  //   name: 'User Profile',
-  // },
-  'Profile - Generate/Regenerate API Token': browser => {
+const UserProfileTest: BaseTest = {
+  '@disabled': false,
+  developer: 'Ciaran Schutte',
+  'Profile - Generate/Regenerate API Token': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(buildUrl(`/user`));
     browser.assert.visible('#button-generate-api-token');
     browser.expect.element('#button-generate-api-token').to.not.have.attribute('disabled');
@@ -35,4 +19,7 @@ module.exports = {
       .element('#apiToken')
       .text.to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/); //UUID
   },
+  after: (browser, done) => submitResults(browser, done),
 };
+
+export = UserProfileTest;
