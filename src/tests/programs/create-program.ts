@@ -10,7 +10,7 @@ import { multiSelectClick, selectClick, multiCheckboxClick } from '../../utils/f
 const program = generateProgram();
 
 const CreateProgramTest: BaseTest = {
-  '@disabled': true,
+  '@disabled': false,
   developer: 'Ciaran Schutte',
   tags: ['programs', 'create-program'],
   desiredCapabilities: {

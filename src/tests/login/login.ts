@@ -4,7 +4,7 @@ import { submitResults, buildUrl, loginAsUser, TEST_USERS } from '../../helpers'
 import { NightwatchBrowser } from 'nightwatch';
 
 const LoginTest: BaseTest = {
-  '@disabled': true,
+  '@disabled': false,
   developer: 'Ciaran Schutte',
   tags: ['login'],
   desiredCapabilities: {

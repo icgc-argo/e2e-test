@@ -13,7 +13,7 @@ import { NightwatchBrowser } from 'nightwatch';
 const program = generateProgram();
 
 const ClinicalSubmissionTest: BaseTest = {
-  '@disabled': true,
+  '@disabled': false,
   developer: 'Ciaran Schutte',
   tags: ['programs', 'clinical-submission'],
   desiredCapabilities: {

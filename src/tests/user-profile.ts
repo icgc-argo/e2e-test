@@ -4,7 +4,7 @@ import { startAsUser, buildUrl, TEST_USERS, submitResults } from '../helpers';
 import { NightwatchBrowser } from 'nightwatch';
 
 const UserProfileTest: BaseTest = {
-  '@disabled': true,
+  '@disabled': false,
   developer: 'Ciaran Schutte',
   'Profile - Generate/Regenerate API Token': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(buildUrl(`/user`));
