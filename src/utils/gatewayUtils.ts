@@ -1,8 +1,27 @@
 import fetch from 'isomorphic-fetch';
 import urlJoin from 'url-join';
 import FormData from 'form-data';
+import retry from 'async-retry';
 
 const GATEWAY_API_ROOT: string = process.env.GATEWAY_API_ROOT || '';
+const defaultUrl = urlJoin(GATEWAY_API_ROOT, 'graphql');
+
+const fetchWithRetries = (url: string, headers: any) => {
+  const request = async (bail: any) => {
+    const res = await fetch(url, headers);
+
+    if (403 === res.status) {
+      // don't retry upon 403
+      bail(new Error('Unauthorized'));
+      return;
+    }
+
+    const data = await res.json();
+    return data;
+  };
+
+  return retry(request, { retries: 5 });
+};
 
 const runGqlQuery = async ({
   query,
@@ -12,8 +31,8 @@ const runGqlQuery = async ({
   query: string;
   variables: { [key: string]: {} };
   jwt: string;
-}): Promise<Response> => {
-  return fetch(urlJoin(GATEWAY_API_ROOT, 'graphql'), {
+}): Promise<any> => {
+  const headers = {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -23,7 +42,9 @@ const runGqlQuery = async ({
       query,
       variables,
     }),
-  }).then(res => res.json());
+  };
+
+  return fetchWithRetries(defaultUrl, headers);
 };
 
 const uploadFileFromString = (fileData: string, fileName: string) => {
@@ -85,7 +106,7 @@ const runGqlUpload = async ({
     });
   }
 
-  return fetch(urlJoin(GATEWAY_API_ROOT, 'graphql'), {
+  const headers = {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -93,7 +114,9 @@ const runGqlUpload = async ({
     // form-data type is clashing with node form-data, some methods aren't defined
     //@ts-ignore
     body: formData,
-  }).then(res => res.json());
+  };
+
+  return fetchWithRetries(defaultUrl, headers);
 };
 
 export { runGqlQuery, runGqlUpload, uploadFileFromString };
