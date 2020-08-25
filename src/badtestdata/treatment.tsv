@@ -1,3 +1,3 @@
-program_id	submitter_donor_id	submitter_treatment_id	treatment_type	age_at_consent_for_treatment	is_primary_treatment	treatment_start_interval	treatment_duration	therapeutic_intent	response_to_therapy
-DASH-CA	DASH-1	T_04	Hormonal therapy	15	Yes	123	195	Concurrent	Partial response
-DASH-CA	DASH-1	T_03	Radiation therapy	15	Yes	192	204	Concurrent	Partial response
+program_id	submitter_donor_id	submitter_treatment_id	treatment_type	age_at_consent_for_treatment	is_primary_treatment	treatment_start_interval	treatment_duration	treatment_intent	response_to_treatment	treatment_setting	submitter_primary_diagnosis_id
+TEST-CA	DASH-1	T_04	Hormonal therapy	15	Yes	123	195	Concurrent	Partial response		
+TEST-CA	DASH-1	T_03	Radiation therapy	15	Yes	192	204	Concurrent	Partial response		
