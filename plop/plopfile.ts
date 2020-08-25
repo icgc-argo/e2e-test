@@ -15,8 +15,8 @@ module.exports = function(plop: NodePlopAPI) {
     actions: [
       {
         type: 'add',
-        path: './src/tests/{{dashCase group}}/{{dashCase name}}.ts',
-        templateFile: './plop/templates/test.hbs',
+        path: '../src/tests/{{dashCase group}}/{{dashCase name}}.ts',
+        templateFile: './templates/test.hbs',
       },
     ],
   });

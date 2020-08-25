@@ -1,14 +1,14 @@
 import { submitResults } from '../../helpers';
 import { BaseTest } from '../../types';
-import { NightwatchBrowser, NightwatchCallbackResult } from 'nightwatch';
+import { NightwatchBrowser } from 'nightwatch';
 
 
 const {{properCase name}}Test: BaseTest = {
 '@disabled': false,
 tags: [],
-developer: {{titleCase developer}},
+developer: '{{titleCase developer}}',
 desiredCapabilities: {
-name: {{titleCase name}}::{{titleCase developer}},
+name: '{{titleCase name}} :: {{titleCase developer}}',
 },
 
 
