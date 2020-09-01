@@ -6,18 +6,19 @@ import retry from 'async-retry';
 const GATEWAY_API_ROOT: string = process.env.GATEWAY_API_ROOT || '';
 const defaultUrl = urlJoin(GATEWAY_API_ROOT, 'graphql');
 
-const fetchWithRetries = (url: string, headers: any) => {
+const fetchWithRetries: typeof fetch = (
+  url: RequestInfo,
+  options?: RequestInit,
+): Promise<Response> => {
   const request = async (bail: any) => {
-    const res = await fetch(url, headers);
+    const res = await fetch(url, options);
 
     if (403 === res.status) {
       // don't retry upon 403
       bail(new Error('Unauthorized'));
-      return;
     }
 
-    const data = await res.json();
-    return data;
+    return res;
   };
 
   return retry(request, { retries: 5 });
@@ -32,7 +33,7 @@ const runGqlQuery = async ({
   variables: { [key: string]: {} };
   jwt: string;
 }): Promise<any> => {
-  const headers = {
+  const options = {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -44,7 +45,8 @@ const runGqlQuery = async ({
     }),
   };
 
-  return fetchWithRetries(defaultUrl, headers);
+  const res = await fetchWithRetries(defaultUrl, options);
+  return res.status === 200 && res.json();
 };
 
 const uploadFileFromString = (fileData: string, fileName: string) => {
@@ -69,7 +71,7 @@ const runGqlUpload = async ({
   files: Array<{ fileData: string; fileName: string }>;
   asArray?: boolean;
 }) => {
-  const formData = new FormData();
+  const formData: FormData = new FormData();
 
   const updatedVariables: { shortName: string; files: null | Array<string | null> } = {
     ...variables,
@@ -106,17 +108,17 @@ const runGqlUpload = async ({
     });
   }
 
-  const headers = {
+  const options = {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
     // form-data type is clashing with node form-data, some methods aren't defined
-    //@ts-ignore
-    body: formData,
+    body: (formData as unknown) as BodyInit,
   };
 
-  return fetchWithRetries(defaultUrl, headers);
+  const resp = await fetchWithRetries(defaultUrl, options);
+  return resp.status === 200 && resp.json();
 };
 
 export { runGqlQuery, runGqlUpload, uploadFileFromString };
