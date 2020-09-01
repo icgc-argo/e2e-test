@@ -5,7 +5,7 @@ require('dotenv').config();
 const CHROME_DRIVER_PATH = process.env.CHROME_DRIVER_PATH;
 
 const config = {
-  src_folders: ['../tests/programs'],
+  src_folders: ['../tests'],
   output_folder: './test_reports',
 
   //  custom_commands_path: './commands',

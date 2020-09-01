@@ -3,6 +3,9 @@ import { Program } from '../types';
 import { runGqlQuery, runGqlUpload, uploadFileFromString } from './gatewayUtils';
 import fs from 'fs';
 import urljoin from 'url-join';
+import path from 'path';
+
+const regions: string[] = ['Canada'];
 
 const generateProgram = (program: Partial<Program> = {}): Program => {
   const createTime = new Date();
@@ -16,8 +19,8 @@ const generateProgram = (program: Partial<Program> = {}): Program => {
       commitmentDonors: 1234,
       website: 'https://example.com',
       institutions: ['OICR'],
-      countries: ['Canada', 'United States'],
-      regions: ['North America', 'South America'],
+      countries: ['Canada'],
+      regions,
       cancerTypes: ['Brain cancer', 'Bladder cancer'],
       primarySites: ['Brain', 'Bladder'],
       membershipType: 'FULL',
@@ -76,8 +79,8 @@ const submitClinicalData = async ({
     'donor',
     'follow_up',
     'hormone_therapy',
-    'primary_diagnosis-good',
-    'radiation',
+    'primary_diagnosis',
+    'chemotherapy',
     'treatment',
   ];
 
@@ -92,17 +95,17 @@ const submitClinicalData = async ({
   }}`;
 
   const dataFiles = fileTypes.map(fileType => {
-    const folderPath = good ? './goodtestdata/' : './badtestdata/';
+    const folderPath = path.resolve(__dirname, good ? '../goodtestdata/' : '../badtestdata/');
     const filePath = urljoin(folderPath, `${fileType}.tsv`);
     const file = fs
       .readFileSync(filePath, 'utf8')
-      .split('DASH-CA')
+      .split('TEST-CA')
       .join(shortName);
 
     return uploadFileFromString(file, fileType.concat('.tsv'));
   });
 
-  return await runGqlUpload({
+  return runGqlUpload({
     jwt,
     query,
     variables: { shortName },
@@ -112,8 +115,8 @@ const submitClinicalData = async ({
 
 const registerSamples = async ({ jwt, shortName }: { jwt: string; shortName: string }) => {
   const file = fs
-    .readFileSync('./goodtestdata/sample_registration.tsv', 'utf8')
-    .split('DASH-CA')
+    .readFileSync(path.resolve(__dirname, '../goodtestdata/sample_registration.tsv'), 'utf8')
+    .split('TEST-CA')
     .join(shortName);
 
   const query = `mutation ($files:Upload!, $shortName:String!) {
@@ -184,7 +187,7 @@ const registerSamples = async ({ jwt, shortName }: { jwt: string; shortName: str
     }
   }`;
 
-  return await runGqlUpload({
+  return runGqlUpload({
     jwt,
     query,
     variables: { shortName },

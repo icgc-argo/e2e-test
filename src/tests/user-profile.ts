@@ -4,7 +4,7 @@ import { startAsUser, buildUrl, TEST_USERS, submitResults } from '../helpers';
 import { NightwatchBrowser } from 'nightwatch';
 
 const UserProfileTest: BaseTest = {
-  '@disabled': false,
+  '@disabled': true,
   developer: 'Ciaran Schutte',
   'Profile - Generate/Regenerate API Token': (browser: NightwatchBrowser) => {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN).url(buildUrl(`/user`));
@@ -12,7 +12,7 @@ const UserProfileTest: BaseTest = {
     browser.expect.element('#button-generate-api-token').to.not.have.attribute('disabled');
     browser.assert.visible('#button-clipboard-copy-field');
 
-    browser.click('#button-generate-api-token').pause(2000);
+    browser.click('#button-generate-api-token');
 
     browser.expect.element('#apiTokenExpiry').text.to.contain('Expires in: 30 days');
     browser.expect

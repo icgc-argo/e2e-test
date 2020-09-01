@@ -50,12 +50,11 @@ const CreateProgramTest: BaseTest = {
     page
       .waitForElementVisible('#primary-action-create-program', 20000)
       .assert.urlEquals(buildUrl('submission/program'))
-      .useXpath()
-      .waitForElementVisible(
-        `//div[@class='MenuItemContent']//button[contains(text(), ${program.shortName})]`,
-      )
-      .useCss()
-      .end();
+      .waitForElementVisible('.toastStackContainer');
+
+    page.expect.element('.toastStackContainer').text.to.contain('has been created');
+
+    page.end();
   },
 
   after: (browser, done) => submitResults(browser, done),

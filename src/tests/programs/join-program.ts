@@ -1,5 +1,5 @@
 import { submitResults, startAsUser, buildUrl, TEST_USERS } from '../../helpers';
-import { BaseTest } from '../../types';
+import { BaseTest, Done } from '../../types';
 import { NightwatchBrowser, NightwatchCallbackResult } from 'nightwatch';
 
 const { generateProgram, createProgram } = require('../../utils/programUtils');
@@ -24,8 +24,9 @@ const JoinProgramTest: BaseTest = {
     name: 'Manage Programs',
   },
 
-  before: async () => {
+  before: async (browser: NightwatchBrowser, done: Done) => {
     await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
+    done();
   },
 
   'Join a Program': (browser: NightwatchBrowser) => {
@@ -33,10 +34,14 @@ const JoinProgramTest: BaseTest = {
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?activeTab=users`))
       .waitForElementVisible('#add-users')
+      // !! unstable pause
+      .pause(4000)
       .click('#add-users')
       .setValue('[aria-label="First name"]', 'admin')
       .setValue('[aria-label="Last name"]', 'single')
       .setValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
+      .click('select[aria-label="Select role"] + div[role="button"')
+      .click('ol[role="listbox"] li[data-value="ADMIN"]')
       .click('#modal-add-users');
 
     // tests if email was sent to mailhog
@@ -51,13 +56,14 @@ const JoinProgramTest: BaseTest = {
           'href',
           (result: NightwatchCallbackResult<string | null>) => {
             const inviteId = getInviteId(result);
-            console.log(inviteId);
+
             browser
               .url(buildUrl(`/submission/program/join/login/${inviteId}`))
               .useXpath()
               .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`)
               .useCss()
               .deleteCookies()
+
               .perform(() => startAsUser(browser)(TEST_USERS.PROGRAM_ADMIN_SINGLE))
               .pause(1000) //wait for login issues to settle
               .url(buildUrl(`/submission/program/join/details/${inviteId}`))
@@ -68,24 +74,24 @@ const JoinProgramTest: BaseTest = {
               .setValue('[aria-label="first-name-input"]', 'e2e')
               .setValue('[aria-label="last-name-input"]', 'test')
               .setValue('[aria-label="department-input"]', 'oicr')
+              .pause(2000)
               .click('#join-now')
-              .pause(10000)
               .useXpath()
               .waitForElementVisible(
                 `//*[contains(text(), 'Welcome to ${program.shortName}!')]`,
                 10000,
               )
-              .useCss()
               .end();
           },
         );
       });
   },
-
+  /* 
   'Join a Program with wrong email': (browser: NightwatchBrowser) => {
     // adds user
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?tab=users`))
+      .waitForElementVisible('#add-users')
       .click('#add-users')
       .setValue('[aria-label="First name"]', 'admin')
       .setValue('[aria-label="Last name"]', 'single')
@@ -116,7 +122,7 @@ const JoinProgramTest: BaseTest = {
         });
       });
   },
-
+ */
   after: (browser, done) => submitResults(browser, done),
 };
 

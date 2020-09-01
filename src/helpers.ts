@@ -80,8 +80,8 @@ const startAsUser = (browser: NightwatchBrowser) => (user: User) => {
  */
 const loginAsUser = (browser: NightwatchBrowser) => (user: User): NightwatchBrowser =>
   visitPath(browser)('/')
-    .waitForElementVisible('#google-login')
-    .click('#google-login')
+    .waitForElementVisible('#link-login')
+    .click('#link-login')
     .waitForElementVisible('input[type="email"]')
     .setValue('input[type="email"]', user.email)
     .click('#identifierNext')
@@ -101,7 +101,7 @@ const TEST_USERS: { [key: string]: User } = {
     email: process.env.LOGIN_USERID_PROGRAM_ADMIN_SINGLE || '',
     pass: process.env.LOGIN_USERPASS_PROGRAM_ADMIN_SINGLE || '',
     token: process.env.TOKEN_PROGRAM_ADMIN_SINGLE || '',
-    startPath: '/submission/program/PACA-AU/dashboard',
+    startPath: '/user',
   },
   PROGRAM_ADMIN_MULTI: {
     email: process.env.LOGIN_USERID_PROGRAM_ADMIN_MULTI || '',
