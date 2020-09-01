@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.160",
     "@types/nightwatch": "^1.1.6",
-    "chromedriver": "^83.0.1",
+    "chromedriver": "^85.0.0",
     "geckodriver": "^1.19.1",
     "husky": "^4.2.5",
     "plop": "^2.7.1",
