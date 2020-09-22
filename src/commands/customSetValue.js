@@ -4,16 +4,19 @@
  * This manual input workaround works better: https://github.com/nightwatchjs/nightwatch/issues/983#issuecomment-239087213
  */
 //@ts-nocheck
-exports.command = function(selector, value, using) {
-  var self = this;
+const DEFAULT_TIMEOUT = 10000;
+/**
+ * All kinds of wonderful quirks with automating value inputs
+ * This functions attempts to help.
+ * Waits for el to be visible, clicks it to make sure we have focus etc
+ * (there are plenty of issues of all values not being sent if we don't click first)
+ * @param {*} selector
+ * @param {*} value
+ */
+exports.command = function(selector, value) {
+  this.waitForElementVisible(selector, DEFAULT_TIMEOUT)
+    .click(selector)
+    .setValue(selector, value);
 
-  //https://stackoverflow.com/questions/59171682/how-elements-works-in-nightwatch
-  self.elements(using || 'css selector', selector, function(elems) {
-    elems.value.forEach(function(element) {
-      for (var c of value.split('')) {
-        self.elementIdValue(Object.values(element)[0], c);
-      }
-    });
-  });
   return this;
 };

@@ -119,6 +119,10 @@ docker run --network="host" \
   icgcargo/e2e-test:<version>
 ```
 
-## TODO:
+## Misc
 
-[ ] - local dev, throw errors if drivers aren't installed
+- Click on inputs before setting values otherwise character inputs are skipped
+
+- Click on anything that navigates page, no point use waitForElement to wait for loading
+
+- Waiting for elements (waitForElementPresent etc) on a SPA is known to be flaky.

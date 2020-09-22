@@ -53,21 +53,33 @@ const visitPath = (browser: NightwatchBrowser) => (path: string): NightwatchBrow
 
 export const buildUrl = (path: string): string => urlJoin(UI_ROOT, path);
 
+const getOrigin = (root: string) => {
+  const url = new URL(root);
+  console.log('hostname', url.hostname, UI_ROOT.replace(/http[s]?:\/\//, ''));
+  return url.hostname;
+};
+
+export const createEgoCookie = (token: string): Cookie => ({
+  name: 'EGO_JWT',
+  value: token,
+  path: '/',
+  // domain: removePort(UI_ROOT.replace(/http[s]?:\/\//, '')), //cookie domain has no http(s)://
+  // domain: getOrigin(UI_ROOT), //cookie domain has no http(s)://
+  // @ts-ignore
+  domain: null,
+  secure: false,
+});
+
 /*
  * Insert JWT into cookies from env file.
  * Simulates a logged in state without requiring the login flow.
  */
 const startAsUser = (browser: NightwatchBrowser) => (user: User) => {
-  const cookie: Cookie = {
-    name: 'EGO_JWT',
-    value: user.token,
-    path: '/',
-    domain: UI_ROOT.replace(/http[s]?:\/\//, ''), //cookie domain has no http(s)://
-    secure: false,
-  };
-
+  const cookie = createEgoCookie(user.token);
   // Need to navigate to site before setting cookie, so we go to root.
+  console.log('start as usercoookie', cookie);
   visitPath(browser)('/')
+    .url(url => console.log('CB', url))
     .waitForElementVisible('body')
     .setCookie(cookie);
   // Now we can nav to startPath
@@ -75,8 +87,10 @@ const startAsUser = (browser: NightwatchBrowser) => (user: User) => {
 };
 
 /*
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * WARNING! This does not work on any automated testing due to Multi factor auth!
  * Execute google login flow from the home page.
- * WARNING! This does not work on browserstack!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 const loginAsUser = (browser: NightwatchBrowser) => (user: User): NightwatchBrowser =>
   visitPath(browser)('/')

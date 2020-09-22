@@ -11,6 +11,7 @@ const fetchWithRetries: typeof fetch = (
   options?: RequestInit,
 ): Promise<Response> => {
   const request = async (bail: any) => {
+    console.log('Requesting...');
     const res = await fetch(url, options);
 
     if (403 === res.status) {
@@ -46,6 +47,7 @@ const runGqlQuery = async ({
   };
 
   const res = await fetchWithRetries(defaultUrl, options);
+
   return res.status === 200 && res.json();
 };
 

@@ -4,6 +4,7 @@ import { NightwatchBrowser, NightwatchCallbackResult } from 'nightwatch';
 import { addProgramPermissions } from '../../utils/user';
 import { generateProgram, createProgram } from '../../utils/programUtils';
 import { multiSelectClick } from '../../utils/formUtils';
+import { invert } from 'lodash';
 
 const program = generateProgram();
 console.log('program', program);
@@ -11,10 +12,11 @@ program.shortName = 'Z379254-CA';
 
 const MAILHOG_ROOT = process.env.MAILHOG_ROOT || '';
 
-const getInviteId = (result: NightwatchCallbackResult<string | null>): string => {
-  const value = result.value ? (result.value as string) : '';
-  const matches = value.match(/[^\/]*$/);
-  return matches ? matches[0] : '';
+const getInviteId = (result: any): string => {
+  // const value = result.value ? result.value : '';
+  //  const matches = value.match(/[^\/]*$/);
+  //  return matches ? matches[0] : '';
+  return '';
 };
 
 const DEFAULT_TIMEOUT = 30000;
@@ -36,30 +38,31 @@ const JoinProgramTest: BaseTest = {
   /**
    * DCC Admin inviting Program Admin Single
    */
-  'Join a Program': (browser: NightwatchBrowser) => {
+  'Join a Program': async (browser: NightwatchBrowser) => {
     // adds user
     startAsUser(browser)(TEST_USERS.DCC_ADMIN)
       .url(buildUrl(`/submission/program/${program.shortName}/manage?activeTab=users`))
 
-      /*   .waitForElementPresent('#global-loader-view')
-      .waitForElementNotPresent('#global-loader-view') */
+      /**
+       * Loading overlay causes clicks to be intercepted
+       * loading overlay is not reliably visible either
+       * need a better way for this
+       *  .waitForElementPresent('#global-loader-view')
+       *  .waitForElementNotPresent('#global-loader-view')
+       */
+
       .pause(5000)
 
       .waitForElementVisible('#add-users', DEFAULT_TIMEOUT)
       .click('#add-users')
-      .waitForElementVisible('[aria-label="First name"]', DEFAULT_TIMEOUT)
-      //@ts-ignore
+
+      //@ts-ignore (custom commands aren't covered by NS types)
       .customSetValue('[aria-label="First name"]', 'admin')
-      .waitForElementVisible('[aria-label="Last name"]', DEFAULT_TIMEOUT)
       .customSetValue('[aria-label="Last name"]', 'single')
-
-      .waitForElementVisible('[aria-label="Email"]', DEFAULT_TIMEOUT)
-
       .customSetValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
 
       .click('select[aria-label="Select role"] + div[role="button"')
       .click('ol[role="listbox"] li[data-value="ADMIN"]')
-
       .click('#modal-add-users');
 
     // tests if email was sent to mailhog
@@ -67,17 +70,21 @@ const JoinProgramTest: BaseTest = {
       .pause(10000) // allows time for email to reach mailhog
       .url(MAILHOG_ROOT)
       .useXpath()
+      // make sure the email matches rather than just clicking first email
       .click(`//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
-      .frame('preview-html', () => {
+
+      // async is broke, callback hell for now: https://github.com/nightwatchjs/nightwatch/issues/2294
+
+      //const elFrameId= {ELEMENT: frameId}
+      .frame('preview-html', res => {
         browser.getAttribute(
           "//a[contains(text(), 'JOIN THE PROGRAM')]",
           'href',
           (result: NightwatchCallbackResult<string | null>) => {
             const inviteId = getInviteId(result);
-
+            console.log('invite id', inviteId);
             browser
               .url(buildUrl(`/submission/program/join/login/${inviteId}`))
-              .useXpath()
               .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`)
               .useCss()
               .deleteCookies()
@@ -132,24 +139,27 @@ const JoinProgramTest: BaseTest = {
     browser
       .pause(10000) // allows time for email to reach mailhog
       .url(MAILHOG_ROOT)
+      .pause()
       .useXpath()
       .click(`//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_MULTI.email}')][1]`)
       .frame('preview-html', () => {
-        browser.getAttribute("//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', result => {
-          const inviteId = getInviteId(result);
-          browser
-            .url(buildUrl(`/submission/program/join/login/${inviteId}`))
-            .useXpath()
-            .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`)
-            .useCss()
-            .deleteCookies()
-            .perform(() => startAsUser(browser)(TEST_USERS.PROGRAM_ADMIN_SINGLE))
-            .url(buildUrl(`/submission/program/join/details/${inviteId}`))
-            .useXpath()
-            .waitForElementVisible(`//*[contains(text(), 'Incorrect email address')]`)
-            .useCss()
-            .end();
-        });
+        browser
+          .useXpath()
+          .getAttribute("//a[contains(text(), 'JOIN THE PROGRAM')]", 'href', result => {
+            const inviteId = getInviteId(result);
+            browser
+              .url(buildUrl(`/submission/program/join/login/${inviteId}`))
+              .useXpath()
+              .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`)
+              .useCss()
+              .deleteCookies()
+              .perform(() => startAsUser(browser)(TEST_USERS.PROGRAM_ADMIN_SINGLE))
+              .url(buildUrl(`/submission/program/join/details/${inviteId}`))
+              .useXpath()
+              .waitForElementVisible(`//*[contains(text(), 'Incorrect email address')]`)
+              .useCss()
+              .end();
+          });
       });
   },
 
