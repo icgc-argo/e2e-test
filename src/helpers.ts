@@ -53,20 +53,11 @@ const visitPath = (browser: NightwatchBrowser) => (path: string): NightwatchBrow
 
 export const buildUrl = (path: string): string => urlJoin(UI_ROOT, path);
 
-const getOrigin = (root: string) => {
-  const url = new URL(root);
-  console.log('hostname', url.hostname, UI_ROOT.replace(/http[s]?:\/\//, ''));
-  return url.hostname;
-};
-
 export const createEgoCookie = (token: string): Cookie => ({
   name: 'EGO_JWT',
   value: token,
   path: '/',
-  // domain: removePort(UI_ROOT.replace(/http[s]?:\/\//, '')), //cookie domain has no http(s)://
-  // domain: getOrigin(UI_ROOT), //cookie domain has no http(s)://
-  // @ts-ignore
-  domain: null,
+  domain: UI_ROOT.replace(/http[s]?:\/\//, ''), //cookie domain has no http(s)://
   secure: false,
 });
 
@@ -77,7 +68,7 @@ export const createEgoCookie = (token: string): Cookie => ({
 const startAsUser = (browser: NightwatchBrowser) => (user: User) => {
   const cookie = createEgoCookie(user.token);
   // Need to navigate to site before setting cookie, so we go to root.
-  console.log('start as usercoookie', cookie);
+
   visitPath(browser)('/')
     .url(url => console.log('CB', url))
     .waitForElementVisible('body')
@@ -92,7 +83,7 @@ const startAsUser = (browser: NightwatchBrowser) => (user: User) => {
  * Execute google login flow from the home page.
  * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
-const loginAsUser = (browser: NightwatchBrowser) => (user: User): NightwatchBrowser =>
+/* const loginAsUser = (browser: NightwatchBrowser) => (user: User): NightwatchBrowser =>
   visitPath(browser)('/')
     .waitForElementVisible('#link-login')
     .click('#link-login')
@@ -103,6 +94,7 @@ const loginAsUser = (browser: NightwatchBrowser) => (user: User): NightwatchBrow
     .setValue('input[type="password"]', user.pass)
     .click('#passwordNext')
     .waitForElementVisible('nav', 20000);
+ */
 
 const TEST_USERS: { [key: string]: User } = {
   DCC_ADMIN: {
@@ -162,4 +154,4 @@ const elementValues = (browser: NightwatchBrowser) => (selector: string) => {
   return output;
 };
 
-export { visitPath, submitResults, startAsUser, loginAsUser, performWithValues, TEST_USERS };
+export { visitPath, submitResults, startAsUser, performWithValues, TEST_USERS };

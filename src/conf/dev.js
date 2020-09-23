@@ -1,5 +1,3 @@
-const { CHROME_LATEST } = require('../env/dev');
-const path = require('path');
 require('dotenv').config();
 
 const config = {
@@ -11,9 +9,7 @@ const config = {
 
   webdriver: {
     start_process: true,
-    // server_path: 'node_modules/geckodriver/bin/geckodriver',
     server_path: 'node_modules/chromedriver/bin/chromedriver',
-
     port: 9515,
   },
 

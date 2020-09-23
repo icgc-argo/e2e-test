@@ -66,9 +66,7 @@ export const addProgramPermissions = (userToken: string, permissions: Array<stri
     modifiedToken.context.scope = permissions;
     modifiedToken.context.user.permissions = permissions;
     modifiedToken.scope = permissions;
-    console.log('modeifled', modifiedToken);
     const signedToken = generateToken(modifiedToken);
-
     return signedToken;
   } else {
     throw Error('util :: addProgramPermissions :: Cannot decode user token');
@@ -80,6 +78,5 @@ const generateToken = (token: JWT) => {
   key.importKey(new Buffer(config.EGO_PRIVATE_KEY, 'base64'), 'pkcs8-private-der');
   const pk = key.exportKey();
   const output = jwt.sign(token, pk, { algorithm: 'RS256' });
-  console.log(output);
   return output;
 };

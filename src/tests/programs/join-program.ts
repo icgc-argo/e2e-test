@@ -4,23 +4,18 @@ import { NightwatchBrowser, NightwatchCallbackResult } from 'nightwatch';
 import { addProgramPermissions } from '../../utils/user';
 import { generateProgram, createProgram } from '../../utils/programUtils';
 import { multiSelectClick } from '../../utils/formUtils';
-import { invert } from 'lodash';
 
 const program = generateProgram();
-console.log('program', program);
-program.shortName = 'Z379254-CA';
 
 const MAILHOG_ROOT = process.env.MAILHOG_ROOT || '';
 
 const getInviteId = (result: any): string => {
-  // const value = result.value ? result.value : '';
-  //  const matches = value.match(/[^\/]*$/);
-  //  return matches ? matches[0] : '';
-  return '';
+  const value = result.value ? result.value : '';
+  const matches = value.match(/[^\/]*$/);
+  return matches ? matches[0] : '';
 };
 
 const DEFAULT_TIMEOUT = 30000;
-const TT = 100;
 
 const JoinProgramTest: BaseTest = {
   '@disabled': false,
@@ -31,7 +26,7 @@ const JoinProgramTest: BaseTest = {
   },
 
   before: async (browser: NightwatchBrowser, done: Done) => {
-    //await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
+    await createProgram({ jwt: TEST_USERS.DCC_ADMIN.token, program });
     done();
   },
 
@@ -60,29 +55,23 @@ const JoinProgramTest: BaseTest = {
       .customSetValue('[aria-label="First name"]', 'admin')
       .customSetValue('[aria-label="Last name"]', 'single')
       .customSetValue('[aria-label="Email"]', TEST_USERS.PROGRAM_ADMIN_SINGLE.email)
-
       .click('select[aria-label="Select role"] + div[role="button"')
       .click('ol[role="listbox"] li[data-value="ADMIN"]')
-      .click('#modal-add-users');
+      .click('#modal-add-users')
 
-    // tests if email was sent to mailhog
-    browser
+      // tests if email was sent to mailhog
       .pause(10000) // allows time for email to reach mailhog
       .url(MAILHOG_ROOT)
       .useXpath()
       // make sure the email matches rather than just clicking first email
       .click(`//div[contains(text(), '${TEST_USERS.PROGRAM_ADMIN_SINGLE.email}')][1]`)
-
-      // async is broke, callback hell for now: https://github.com/nightwatchjs/nightwatch/issues/2294
-
-      //const elFrameId= {ELEMENT: frameId}
-      .frame('preview-html', res => {
+      .frame('preview-html', () => {
         browser.getAttribute(
           "//a[contains(text(), 'JOIN THE PROGRAM')]",
           'href',
           (result: NightwatchCallbackResult<string | null>) => {
             const inviteId = getInviteId(result);
-            console.log('invite id', inviteId);
+
             browser
               .url(buildUrl(`/submission/program/join/login/${inviteId}`))
               .waitForElementVisible(`//*[contains(text(), 'Log in with Google')]`)
